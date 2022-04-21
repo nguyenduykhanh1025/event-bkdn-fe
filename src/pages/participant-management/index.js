@@ -14,15 +14,15 @@ import TitleHeaderPage from 'src/@core/components/title-header-page'
 import ArrowRightThinIcon from 'mdi-material-ui/ArrowRightThin'
 import { useRouter } from 'next/router'
 
-function createData(id, name, mssv, birthDate) {
-  return { id, name, mssv, birthDate }
+function createData(id, name, mssv, phoneNumber, email, birthDate) {
+  return { id, name, mssv, phoneNumber, email, birthDate }
 }
 
 const rows = [
-  createData(1, 'Nguyen Duy Khánh', '102160050', '10-09-1998'),
-  createData(1, 'Nguyen Duy Khánh', '102160050', '10-09-1998'),
-  createData(1, 'Nguyen Duy Khánh', '102160050', '10-09-1998'),
-  createData(1, 'Nguyen Duy Khánh', '102160050', '10-09-1998')
+  createData(1, 'Nguyen Duy Khánh', '102160050', '0766735782', 'nguyenduykhanh125@gmail', '10-09-1998'),
+  createData(1, 'Nguyen Duy Khánh', '102160050', '0766735782', 'nguyenduykhanh125@gmail', '10-09-1998'),
+  createData(1, 'Nguyen Duy Khánh', '102160050', '0766735782', 'nguyenduykhanh125@gmail', '10-09-1998'),
+  createData(1, 'Nguyen Duy Khánh', '102160050', '0766735782', 'nguyenduykhanh125@gmail', '10-09-1998')
 ]
 
 const AccountSettings = () => {
@@ -47,6 +47,8 @@ const AccountSettings = () => {
                       <TableCell align='center'>Ảnh</TableCell>
                       <TableCell align='left'>Tên</TableCell>
                       <TableCell align='center'>MSSV</TableCell>
+                      <TableCell align='center'>Email</TableCell>
+                      <TableCell align='center'>Số Điện Thoại</TableCell>
                       <TableCell align='center'>Ngày Sinh</TableCell>
                       <TableCell align='center'>Actions</TableCell>
                     </TableRow>
@@ -67,6 +69,8 @@ const AccountSettings = () => {
                         </TableCell>
                         <TableCell align='left'>{row.name}</TableCell>
                         <TableCell align='center'>{row.mssv}</TableCell>
+                        <TableCell align='center'>{row.email}</TableCell>
+                        <TableCell align='center'>{row.phoneNumber}</TableCell>
                         <TableCell align='center'>{row.birthDate}</TableCell>
                         <TableCell align='center'>
                           <div>
