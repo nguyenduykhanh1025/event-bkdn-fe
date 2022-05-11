@@ -47,7 +47,7 @@ const AccountSettings = () => {
                       <TableCell align='center'>Ảnh</TableCell>
                       <TableCell align='left'>Tên</TableCell>
                       <TableCell align='center'>MSSV</TableCell>
-                      <TableCell align='center'>Email</TableCell>
+                      <TableCell align='left'>Email</TableCell>
                       <TableCell align='center'>Số Điện Thoại</TableCell>
                       <TableCell align='center'>Ngày Sinh</TableCell>
                       <TableCell align='center'>Actions</TableCell>
@@ -69,7 +69,7 @@ const AccountSettings = () => {
                         </TableCell>
                         <TableCell align='left'>{row.name}</TableCell>
                         <TableCell align='center'>{row.mssv}</TableCell>
-                        <TableCell align='center'>{row.email}</TableCell>
+                        <TableCell align='left'>{row.email}</TableCell>
                         <TableCell align='center'>{row.phoneNumber}</TableCell>
                         <TableCell align='center'>{row.birthDate}</TableCell>
                         <TableCell align='center'>

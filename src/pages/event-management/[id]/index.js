@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import TitleHeaderPage from 'src/@core/components/title-header-page'
 import Card from '@mui/material/Card'
@@ -31,8 +31,8 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction='up' ref={ref} {...props} />
 })
 
-const eventManagementDetail = props => {
-  const [open, setOpen] = React.useState(false)
+const EventManagementDetail = props => {
+  const [open, setOpen] = useState(false)
 
   const handleClickOpen = () => {
     setOpen(true)
@@ -256,6 +256,6 @@ const eventManagementDetail = props => {
   )
 }
 
-eventManagementDetail.propTypes = {}
+EventManagementDetail.propTypes = {}
 
-export default eventManagementDetail
+export default EventManagementDetail

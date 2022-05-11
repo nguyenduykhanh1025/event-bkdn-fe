@@ -58,13 +58,6 @@ const LoginPage = () => {
 
   // ** Hook
   const theme = useTheme()
-  const router = useRouter()
-  // const ui = useSelector(state => {
-  //   console.log(state)
-  // })
-  // const dispatch = useDispatch()
-  // dispatch(uiSlice.actions.setTest('sometinh fssssssssssssssssss'))
-  // console.log(productService.getProducts());
 
   const handleChange = prop => event => {
     setValues({ ...values, [prop]: event.target.value })
