@@ -11,6 +11,9 @@ import Paper from '@mui/material/Paper'
 import { Pagination } from '@mui/material'
 import ArrowRightThinIcon from 'mdi-material-ui/ArrowRightThin'
 import { useRouter } from 'next/router'
+import { useEffect, useState } from 'react'
+import { adminEventService } from 'src/@core/services'
+import constants from 'src/@core/utils/constants'
 
 function createData(id, title, participantCount, participantRegisteredCount, startDate, endDate) {
   return { id, title, participantCount, participantRegisteredCount, startDate, endDate }
@@ -24,8 +27,24 @@ const rows = [
   createData(1, 'Title 1', 20, 15, '20-12-1998', '10-09-1998')
 ]
 
-const TabInfo = () => {
+const TabIncomingEvents = () => {
+  const [events, setEvents] = useState([])
   const router = useRouter()
+
+  useEffect(async () => {
+    await getEventsIncomingFromAPI()
+  }, [])
+
+  const getEventsIncomingFromAPI = async () => {
+    const params = {
+      filter_column: 'status',
+      filter_data: constants.EVENT_STATUS.INCOMING_EVENT
+    }
+    try {
+      const res = await adminEventService.paginate(params)
+      setEvents(res.data.data.items)
+    } catch (err) {}
+  }
 
   const onClickGoToDetail = () => {
     router.push('/event-management/12')
@@ -54,16 +73,16 @@ const TabInfo = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rows.map(row => (
+                {events.map(row => (
                   <TableRow key={row.name} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                     <TableCell component='th' scope='row' align='center'>
                       {row.id}
                     </TableCell>
                     <TableCell align='left'>{row.title}</TableCell>
-                    <TableCell align='center'>{row.participantCount}</TableCell>
-                    <TableCell align='center'>{row.participantRegisteredCount}</TableCell>
-                    <TableCell align='center'>{row.startDate}</TableCell>
-                    <TableCell align='center'>{row.endDate}</TableCell>
+                    <TableCell align='center'>{row.count_need_participate}</TableCell>
+                    <TableCell align='center'>{row.count_registered}</TableCell>
+                    <TableCell align='center'>{row.start_at}</TableCell>
+                    <TableCell align='center'>{row.end_at}</TableCell>
                     <TableCell align='center'>
                       <div>
                         <Button
@@ -90,4 +109,4 @@ const TabInfo = () => {
   )
 }
 
-export default TabInfo
+export default TabIncomingEvents

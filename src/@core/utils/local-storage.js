@@ -5,7 +5,9 @@ const localStorageHelper = {
     localStorage.setItem(constants.LOCAL_STORAGE.TOKEN_KEY, token)
   },
   getToken() {
-    localStorage.removeItem(constants.LOCAL_STORAGE.TOKEN_KEY)
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem(constants.LOCAL_STORAGE.TOKEN_KEY)
+    }
   }
 }
 
