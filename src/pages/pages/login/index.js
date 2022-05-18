@@ -30,7 +30,9 @@ import BlankLayout from 'src/@core/layouts/BlankLayout'
 import FooterIllustrationsV1 from 'src/@core/components/footers/AuthFooterIllustration'
 import { useSelector, useDispatch } from 'react-redux'
 import uiSlice from 'src/@core/store/slices/uiSlice'
-import productService from 'src/@core/services/productService'
+import { authService } from 'src/@core/services'
+import { showAlertError, showAlertSuccess } from 'src/@core/utils/alert-notify-helper'
+import localStorageHelper from 'src/@core/utils/local-storage'
 
 const Card = styled(MuiCard)(({ theme }) => ({
   [theme.breakpoints.up('sm')]: { width: '28rem' }
@@ -50,14 +52,13 @@ const FormControlLabel = styled(MuiFormControlLabel)(({ theme }) => ({
 }))
 
 const LoginPage = () => {
-  // ** State
   const [values, setValues] = useState({
+    email: '',
     password: '',
     showPassword: false
   })
-
-  // ** Hook
   const theme = useTheme()
+  const router = useRouter()
 
   const handleChange = prop => event => {
     setValues({ ...values, [prop]: event.target.value })
@@ -69,6 +70,22 @@ const LoginPage = () => {
 
   const handleMouseDownPassword = event => {
     event.preventDefault()
+  }
+
+  const onClickSaveLogin = async () => {
+    const payload = {
+      email: values.email,
+      password: values.password
+    }
+
+    try {
+      const res = await authService.login(payload)
+      const token = res.data.data.access_token
+      localStorageHelper.setToken(token)
+      router.push('/')
+    } catch (err) {
+      showAlertError('Đăng nhập thất bại!')
+    }
   }
 
   return (
@@ -154,8 +171,22 @@ const LoginPage = () => {
             </Typography>
             <Typography variant='body2'>Please sign-in to your account and start the adventure</Typography>
           </Box>
-          <form noValidate autoComplete='off' onSubmit={e => e.preventDefault()}>
-            <TextField autoFocus fullWidth id='email' label='Email' sx={{ marginBottom: 4 }} />
+          <form
+            noValidate
+            autoComplete='off'
+            onSubmit={e => {
+              e.preventDefault()
+            }}
+          >
+            <TextField
+              autoFocus
+              fullWidth
+              id='email'
+              label='Email'
+              sx={{ marginBottom: 4 }}
+              value={values.email}
+              onChange={e => setValues({ ...values, email: e.target.value })}
+            />
             <FormControl fullWidth>
               <InputLabel htmlFor='auth-login-password'>Password</InputLabel>
               <OutlinedInput
@@ -186,8 +217,8 @@ const LoginPage = () => {
                 <LinkStyled onClick={e => e.preventDefault()}>Forgot Password?</LinkStyled>
               </Link>
             </Box>
-            <Button fullWidth size='large' variant='contained' sx={{ marginBottom: 7 }} onClick={() => {}}>
-              Login
+            <Button fullWidth size='large' variant='contained' sx={{ marginBottom: 7 }} onClick={onClickSaveLogin}>
+              Đăng Nhập
             </Button>
             <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
               <Typography variant='body2' sx={{ marginRight: 2 }}>
