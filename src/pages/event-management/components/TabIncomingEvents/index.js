@@ -14,40 +14,42 @@ import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { adminEventService } from 'src/@core/services'
 import constants from 'src/@core/utils/constants'
+import overlayLoading from 'src/@core/utils/overlay-loading'
 
-function createData(id, title, participantCount, participantRegisteredCount, startDate, endDate) {
-  return { id, title, participantCount, participantRegisteredCount, startDate, endDate }
+const PARAMS_PAGINATE_DEFAULT = {
+  filter_column: 'status',
+  filter_data: constants.EVENT_STATUS.INCOMING_EVENT
 }
-
-const rows = [
-  createData(1, 'Title 1', 20, 15, '20-12-1998', '10-09-1998'),
-  createData(1, 'Title 1', 20, 15, '20-12-1998', '10-09-1998'),
-  createData(1, 'Title 1', 20, 15, '20-12-1998', '10-09-1998'),
-  createData(1, 'Title 1', 20, 15, '20-12-1998', '10-09-1998'),
-  createData(1, 'Title 1', 20, 15, '20-12-1998', '10-09-1998')
-]
 
 const TabIncomingEvents = () => {
   const [events, setEvents] = useState([])
   const router = useRouter()
 
   useEffect(async () => {
-    await getEventsIncomingFromAPI()
+    await getEventsIncomingFromAPI({ ...PARAMS_PAGINATE_DEFAULT })
   }, [])
 
-  const getEventsIncomingFromAPI = async () => {
-    const params = {
-      filter_column: 'status',
-      filter_data: constants.EVENT_STATUS.INCOMING_EVENT
-    }
+  const getEventsIncomingFromAPI = async params => {
     try {
-      const res = await adminEventService.paginate(params)
+    overlayLoading.start()
+      const res = await adminEventService.paginate({ ...params })
       setEvents(res.data.data.items)
     } catch (err) {}
+    finally {
+      overlayLoading.stop()
+    }
   }
 
   const onClickGoToDetail = () => {
     router.push('/event-management/12')
+  }
+
+  const handleChangePage = async (event, newPage) => {
+    const params_paginate = {
+      ...PARAMS_PAGINATE_DEFAULT,
+      page: newPage
+    }
+    await getEventsIncomingFromAPI(params_paginate)
   }
 
   return (
@@ -74,7 +76,7 @@ const TabIncomingEvents = () => {
               </TableHead>
               <TableBody>
                 {events.map(row => (
-                  <TableRow key={row.name} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                  <TableRow key={row.id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                     <TableCell component='th' scope='row' align='center'>
                       {row.id}
                     </TableCell>
@@ -102,7 +104,7 @@ const TabIncomingEvents = () => {
           </TableContainer>
         </Grid>
         <Grid item xs={12}>
-          <Pagination count={10} sx={{ float: 'right' }} color='primary' />
+          <Pagination count={10} sx={{ float: 'right' }} color='primary' onChange={handleChangePage} />
         </Grid>
       </Grid>
     </CardContent>

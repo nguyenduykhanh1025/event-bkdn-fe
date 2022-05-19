@@ -1,9 +1,11 @@
 module.exports = {
-  content: [
-    "./src/**/*.{js,jsx,ts,tsx}",
-  ],
+  content: ['./src/**/*.{js,jsx,ts,tsx}'],
   theme: {
-    extend: {},
+    extend: {
+      zIndex: {
+        1000: '1000'
+      }
+    }
   },
-  plugins: [],
+  plugins: []
 }

@@ -13,6 +13,7 @@ import Magnify from 'mdi-material-ui/Magnify'
 import ModeToggler from 'src/@core/layouts/components/shared-components/ModeToggler'
 import UserDropdown from 'src/@core/layouts/components/shared-components/UserDropdown'
 import NotificationDropdown from 'src/@core/layouts/components/shared-components/NotificationDropdown'
+import OverlayLoading from 'src/@core/components/overlay-loading'
 
 const AppBarContent = props => {
   // ** Props
@@ -33,6 +34,7 @@ const AppBarContent = props => {
             <Menu />
           </IconButton>
         ) : null}
+
         <TextField
           size='small'
           sx={{ '& .MuiOutlinedInput-root': { borderRadius: 4 } }}

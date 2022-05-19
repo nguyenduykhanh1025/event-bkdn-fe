@@ -1,6 +1,7 @@
 // ** MUI Imports
 import Box from '@mui/material/Box'
 import { useTheme } from '@mui/material/styles'
+import OverlayLoading from 'src/@core/components/overlay-loading'
 
 // ** Footer Content Component
 import FooterContent from './FooterContent'

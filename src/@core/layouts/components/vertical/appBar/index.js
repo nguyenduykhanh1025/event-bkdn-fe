@@ -2,6 +2,7 @@
 import { styled, useTheme } from '@mui/material/styles'
 import MuiAppBar from '@mui/material/AppBar'
 import MuiToolbar from '@mui/material/Toolbar'
+import OverlayLoading from 'src/@core/components/overlay-loading'
 
 const AppBar = styled(MuiAppBar)(({ theme }) => ({
   transition: 'none',
@@ -39,6 +40,7 @@ const LayoutAppBar = props => {
 
   return (
     <AppBar elevation={0} color='default' className='layout-navbar' position='static'>
+
       <Toolbar
         className='navbar-content-container'
         sx={{

@@ -20,6 +20,7 @@ import ScrollToTop from 'src/@core/components/scroll-to-top'
 
 // ** Styled Component
 import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
+import OverlayLoading from '../components/overlay-loading'
 
 const VerticalLayoutWrapper = styled('div')({
   height: '100%',
@@ -39,6 +40,7 @@ const ContentWrapper = styled('main')(({ theme }) => ({
   width: '100%',
   padding: theme.spacing(6),
   transition: 'padding .25s ease-in-out',
+  position: 'relative',
   [theme.breakpoints.down('sm')]: {
     paddingLeft: theme.spacing(4),
     paddingRight: theme.spacing(4)
@@ -71,9 +73,9 @@ const VerticalLayout = props => {
         />
         <MainContentWrapper className='layout-content-wrapper'>
           <AppBar toggleNavVisibility={toggleNavVisibility} {...props} />
-
           <ContentWrapper
             className='layout-page-content'
+            class='relative'
             sx={{
               ...(contentWidth === 'boxed' && {
                 mx: 'auto',
@@ -82,6 +84,7 @@ const VerticalLayout = props => {
               })
             }}
           >
+            <OverlayLoading />
             {children}
           </ContentWrapper>
 
