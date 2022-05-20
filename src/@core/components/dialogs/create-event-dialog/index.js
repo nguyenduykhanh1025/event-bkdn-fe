@@ -10,7 +10,7 @@ import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import { FormTitle } from '../../titles'
 import Grid from '@mui/material/Grid'
-import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker'
+// import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker'
 
 const CreateEventDialog = props => {
   const { open, handleClose } = props
@@ -55,28 +55,33 @@ const CreateEventDialog = props => {
         />
         <FormTitle title='Số lượng tham gia:' />
         <TextField autoFocus margin='dense' id='name' type='number' fullWidth variant='outlined' />
-        <Grid container spacing={2}>
-          <Grid item xs={6}>
+        <Grid container spacing={3}>
+          <Grid item xs={3}>
             <FormTitle title='Thời gian bắt đầu:' />
-            <DesktopDatePicker
-              label='Date desktop'
-              inputFormat='MM/dd/yyyy'
-              value={startDate}
-              onChange={handleChange}
-              renderInput={params => <TextField {...params} />}
+            <TextField
+              id='date'
+              type='date'
+              defaultValue='2017-05-24'
+              sx={{ width: '100%' }}
+              InputLabelProps={{
+                shrink: true
+              }}
             />
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={3}>
             <FormTitle title='Thời gian kết thúc:' />
-            <DesktopDatePicker
-              label='Date desktop'
-              inputFormat='MM/dd/yyyy'
-              value={endDate}
-              onChange={handleChange}
-              renderInput={params => <TextField {...params} />}
+            <TextField
+              id='date'
+              type='date'
+              defaultValue='2017-05-24'
+              sx={{ width: '100%' }}
+              InputLabelProps={{
+                shrink: true
+              }}
             />
           </Grid>
         </Grid>
+        <FormTitle title='Yêu cầu thêm:' />
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
