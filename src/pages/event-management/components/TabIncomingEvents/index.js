@@ -15,6 +15,7 @@ import { useEffect, useState } from 'react'
 import { adminEventService } from 'src/@core/services'
 import constants from 'src/@core/utils/constants'
 import overlayLoading from 'src/@core/utils/overlay-loading'
+import CreateEventDialog from 'src/@core/components/dialogs/create-event-dialog'
 
 const PARAMS_PAGINATE_DEFAULT = {
   filter_column: 'status',
@@ -23,19 +24,25 @@ const PARAMS_PAGINATE_DEFAULT = {
 
 const TabIncomingEvents = () => {
   const [events, setEvents] = useState([])
+  const [isOpenCreateEventDialog, setIsOpenCreateEventDialog] = useState(false)
+
   const router = useRouter()
 
   useEffect(async () => {
-    await getEventsIncomingFromAPI({ ...PARAMS_PAGINATE_DEFAULT })
+    await getEventsIncomingFromAPI({
+      ...PARAMS_PAGINATE_DEFAULT
+    })
   }, [])
 
   const getEventsIncomingFromAPI = async params => {
     try {
-    overlayLoading.start()
-      const res = await adminEventService.paginate({ ...params })
+      overlayLoading.start()
+      const res = await adminEventService.paginate({
+        ...params
+      })
       setEvents(res.data.data.items)
-    } catch (err) {}
-    finally {
+    } catch (err) {
+    } finally {
       overlayLoading.stop()
     }
   }
@@ -52,11 +59,22 @@ const TabIncomingEvents = () => {
     await getEventsIncomingFromAPI(params_paginate)
   }
 
+  const onClickCreateNewEvent = () => {
+    setIsOpenCreateEventDialog(true)
+  }
+
   return (
     <CardContent>
       <Grid container spacing={7}>
         <Grid item xs={12}>
-          <Button variant='contained' sx={{ marginRight: 3.5, float: 'right' }}>
+          <Button
+            variant='contained'
+            sx={{
+              marginRight: 3.5,
+              float: 'right'
+            }}
+            onClick={onClickCreateNewEvent}
+          >
             Thêm Sự Kiện
           </Button>
         </Grid>
@@ -76,7 +94,12 @@ const TabIncomingEvents = () => {
               </TableHead>
               <TableBody>
                 {events.map(row => (
-                  <TableRow key={row.id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                  <TableRow
+                    key={row.id}
+                    sx={{
+                      '&:last-child td, &:last-child th': { border: 0 }
+                    }}
+                  >
                     <TableCell component='th' scope='row' align='center'>
                       {row.id}
                     </TableCell>
@@ -104,9 +127,18 @@ const TabIncomingEvents = () => {
           </TableContainer>
         </Grid>
         <Grid item xs={12}>
-          <Pagination count={10} sx={{ float: 'right' }} color='primary' onChange={handleChangePage} />
+          <Pagination
+            count={10}
+            sx={{ float: 'right' }}
+            color='primary'
+            onChange={handleChangePage}
+          />
         </Grid>
       </Grid>
+      <CreateEventDialog
+        open={isOpenCreateEventDialog}
+        handleClose={() => setIsOpenCreateEventDialog(false)}
+      />
     </CardContent>
   )
 }
