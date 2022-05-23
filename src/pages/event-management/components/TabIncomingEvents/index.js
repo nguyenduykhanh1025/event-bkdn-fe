@@ -24,13 +24,18 @@ const PARAMS_PAGINATE_DEFAULT = {
 
 const TabIncomingEvents = () => {
   const [events, setEvents] = useState([])
+  const [meta, setMeta] = useState({
+    currentPage: 0,
+    total: 0,
+    perPage: 10
+  })
   const [isOpenCreateEventDialog, setIsOpenCreateEventDialog] = useState(false)
   const [isNeedReload, setIsNeedReload] = useState(false)
 
   const router = useRouter()
 
   useEffect(async () => {
-    console.log('sssssssssssssss');
+    console.log('sssssssssssssss')
     await getEventsIncomingFromAPI({
       ...PARAMS_PAGINATE_DEFAULT
     })
@@ -43,8 +48,9 @@ const TabIncomingEvents = () => {
         ...params
       })
       setEvents(res.data.data.items)
+      setMeta(res.data.data.meta)
     } catch (err) {
-      console.log(err);
+      console.log(err)
     } finally {
       overlayLoading.stop()
     }
@@ -131,7 +137,7 @@ const TabIncomingEvents = () => {
         </Grid>
         <Grid item xs={12}>
           <Pagination
-            count={10}
+            count={parseInt(meta.total / meta.perPage)}
             sx={{ float: 'right' }}
             color='primary'
             onChange={handleChangePage}

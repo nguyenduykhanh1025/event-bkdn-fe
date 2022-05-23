@@ -40,7 +40,6 @@ const EventManagementDetail = props => {
   const [eventDetail, setEventDetail] = useState({})
 
   useEffect(async () => {
-    console.log('------------')
     await getEventByID()
   }, [])
 

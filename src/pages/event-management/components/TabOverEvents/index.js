@@ -26,7 +26,11 @@ const TabIncomingEvents = () => {
   const [events, setEvents] = useState([])
   const [isOpenCreateEventDialog, setIsOpenCreateEventDialog] = useState(false)
   const [isNeedReload, setIsNeedReload] = useState(false)
-
+  const [meta, setMeta] = useState({
+    currentPage: 0,
+    total: 0,
+    perPage: 10
+  })
   const router = useRouter()
 
   useEffect(async () => {
@@ -42,6 +46,7 @@ const TabIncomingEvents = () => {
         ...params
       })
       setEvents(res.data.data.items)
+      setMeta(res.data.data.meta)
     } catch (err) {
     } finally {
       overlayLoading.stop()
@@ -129,7 +134,7 @@ const TabIncomingEvents = () => {
         </Grid>
         <Grid item xs={12}>
           <Pagination
-            count={10}
+            count={parseInt(meta.total / meta.perPage)}
             sx={{ float: 'right' }}
             color='primary'
             onChange={handleChangePage}

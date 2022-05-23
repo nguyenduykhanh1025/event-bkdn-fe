@@ -37,4 +37,19 @@ const showAlertQuestion = message => {
   })
 }
 
-export { showAlertSuccess, showAlertError, showAlertQuestion }
+const showConfirm = (message, onSave, onCancel) => {
+  Swal.fire({
+    title: message,
+    showDenyButton: true,
+    confirmButtonText: 'OK',
+    denyButtonText: `Trở Về`
+  }).then(result => {
+    if (result.isConfirmed) {
+      onSave()
+    } else if (result.isDenied) {
+      onCancel()
+    }
+  })
+}
+
+export { showAlertSuccess, showAlertError, showAlertQuestion, showConfirm }

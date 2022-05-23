@@ -18,6 +18,7 @@ import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { adminJournalService } from 'src/@core/services'
 import overlayLoading from 'src/@core/utils/overlay-loading'
+import CreateJournalDialog from 'src/@core/components/dialogs/create-journal-dialog'
 
 function createData(id, title, participantCount, participantRegisteredCount, startDate, endDate) {
   return { id, title, participantCount, participantRegisteredCount, startDate, endDate }
@@ -34,9 +35,12 @@ const rows = [
 const AccountSettings = () => {
   const router = useRouter()
   const [journals, setJournals] = useState([])
+  const [isOpenCreateJournalDialog, setIsOpenCreateJournalDialog] = useState(false)
+  const [isNeedReload, setIsNeedReload] = useState(false)
+
   useEffect(async () => {
     await getJournalsFromAPI()
-  }, [])
+  }, [isNeedReload])
 
   const getJournalsFromAPI = async () => {
     try {
@@ -51,8 +55,12 @@ const AccountSettings = () => {
     }
   }
 
-  const onClickGoToDetail = () => {
-    router.push('/news-management/12')
+  const onClickGoToDetail = id => {
+    router.push(`/news-management/${id}`)
+  }
+
+  const onClickCreateNewJournal = () => {
+    setIsOpenCreateJournalDialog(true)
   }
 
   return (
@@ -62,7 +70,11 @@ const AccountSettings = () => {
         <CardContent>
           <Grid container spacing={7}>
             <Grid item xs={12}>
-              <Button variant='contained' sx={{ marginRight: 3.5, float: 'right' }}>
+              <Button
+                variant='contained'
+                sx={{ marginRight: 3.5, float: 'right' }}
+                onClick={onClickCreateNewJournal}
+              >
                 Thêm Tin Tức
               </Button>
             </Grid>
@@ -100,7 +112,9 @@ const AccountSettings = () => {
                               variant='outlined'
                               size='small'
                               endIcon={<ArrowRightThinIcon />}
-                              onClick={onClickGoToDetail}
+                              onClick={() => {
+                                onClickGoToDetail(row.id)
+                              }}
                             >
                               Chi Tiết
                             </Button>
@@ -117,6 +131,14 @@ const AccountSettings = () => {
             </Grid>
           </Grid>
         </CardContent>
+        <CreateJournalDialog
+          open={isOpenCreateJournalDialog}
+          handleClose={() => setIsOpenCreateJournalDialog(false)}
+          onNeedReloadTable={() => {
+            setIsOpenCreateJournalDialog(false)
+            setIsNeedReload(!isNeedReload)
+          }}
+        />
       </Card>
     </>
   )

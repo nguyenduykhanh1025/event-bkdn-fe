@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import TitleHeaderPage from 'src/@core/components/title-header-page'
 import Card from '@mui/material/Card'
@@ -26,12 +26,55 @@ import ApplicationEditIcon from 'mdi-material-ui/ApplicationEdit'
 import DeleteIcon from 'mdi-material-ui/Delete'
 import Slide from '@mui/material/Slide'
 import ParticipantsEventDialog from 'src/@core/components/dialogs/participants-event-dialog'
+import { adminJournalService } from 'src/@core/services'
+import { showConfirm } from 'src/@core/utils/alert-notify-helper'
+import router from 'next/router'
+import overlayLoading from 'src/@core/utils/overlay-loading'
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction='up' ref={ref} {...props} />
 })
 
 const eventManagementDetail = props => {
+  const [journalId, setJournalId] = useState(
+    window.location.href.split('/')[window.location.href.split('/').length - 2]
+  )
+  const [journalDetail, setJournalDetail] = useState({})
+
+  useEffect(async () => {
+    await getJournalByID()
+  }, [])
+
+  const getJournalByID = async () => {
+    try {
+      const res = await adminJournalService.show(journalId)
+      setJournalDetail(res.data.data)
+      console.log(res)
+    } catch (err) {
+    } finally {
+    }
+  }
+
+  const onClickDeleteNews = () => {
+    showConfirm(
+      'Bạn muốn xóa trường này',
+      async () => {
+        try {
+          overlayLoading.start()
+
+          await adminJournalService.delete(journalId)
+          router.back()
+        } catch (err) {
+        } finally {
+          overlayLoading.stop()
+        }
+      },
+      () => {
+        console.log('oh no')
+      }
+    )
+  }
+
   return (
     <>
       <TitleHeaderPage title='Tin Tức Chi Tiết' />
@@ -47,12 +90,23 @@ const eventManagementDetail = props => {
                 <Grid item xs={10}>
                   <div className='float-right mb-5'>
                     <span className='ml-2'>
-                      <Button variant='contained' size='small' startIcon={<ApplicationEditIcon />} color='secondary'>
+                      <Button
+                        variant='contained'
+                        size='small'
+                        startIcon={<ApplicationEditIcon />}
+                        color='secondary'
+                      >
                         Sửa
                       </Button>
                     </span>
                     <span className='ml-2'>
-                      <Button variant='contained' size='small' color='error' startIcon={<DeleteIcon />}>
+                      <Button
+                        variant='contained'
+                        size='small'
+                        color='error'
+                        startIcon={<DeleteIcon />}
+                        onClick={onClickDeleteNews}
+                      >
                         Xóa
                       </Button>
                     </span>
@@ -60,27 +114,21 @@ const eventManagementDetail = props => {
                 </Grid>
                 <Grid item xs={12}>
                   <span className='mr-2'>Tiêu Đề:</span>
-                  <span className='font-bold'>CUỘC THI "DẤU ẤN THANH XUÂN"</span>
+                  <span className='font-bold'>{journalDetail.title}</span>
                 </Grid>
                 <Grid item xs={12}>
                   <Divider />
                 </Grid>
                 <Grid item xs={6}>
                   <span className='mr-2'>Ngày Đăng:</span>
-                  <span className='font-bold'>09:30 20-12-1998</span>
+                  <span className='font-bold'> {journalDetail.posted_at}</span>
                 </Grid>
                 <Grid item xs={12}>
                   <Divider />
                 </Grid>
                 <Grid item xs={12}>
                   <span className='mr-2'>Nội Dung:</span>
-                  <span className='font-bold'>
-                    Đến hẹn lại lên, chương trình trao đổi hợp tác sinh viên giữa Trường Đại học Bách Khoa (DUT) và
-                    Trường Đại học kỹ thuật Singapore (Singapore Polytechnic, SP) lại chuẩn bị diễn ra. Đây là một
-                    chương trình rất hấp dẫn thú vị để các bạn sinh viên năng động DUT có cơ hội trao đổi, hợp tác, học
-                    hỏi với trường đại học quốc tế. Cụ thể, trong chương trình này các bạn có cơ hội học hỏi các khía
-                    cạnh về Xã hội, kinh tế, chính sách trong khu vực ASEAN.
-                  </span>
+                  <span className='font-bold'>{journalDetail.description}</span>
                 </Grid>
               </Grid>
             </CardContent>
