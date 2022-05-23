@@ -25,23 +25,26 @@ const PARAMS_PAGINATE_DEFAULT = {
 const TabIncomingEvents = () => {
   const [events, setEvents] = useState([])
   const [isOpenCreateEventDialog, setIsOpenCreateEventDialog] = useState(false)
+  const [isNeedReload, setIsNeedReload] = useState(false)
 
   const router = useRouter()
 
   useEffect(async () => {
+    console.log('sssssssssssssss');
     await getEventsIncomingFromAPI({
       ...PARAMS_PAGINATE_DEFAULT
     })
-  }, [])
+  }, [isNeedReload])
 
   const getEventsIncomingFromAPI = async params => {
     try {
       overlayLoading.start()
-      const res = await adminEventService.paginate({
+      const res = await adminEventService.paginateEventIncoming({
         ...params
       })
       setEvents(res.data.data.items)
     } catch (err) {
+      console.log(err);
     } finally {
       overlayLoading.stop()
     }
@@ -138,6 +141,10 @@ const TabIncomingEvents = () => {
       <CreateEventDialog
         open={isOpenCreateEventDialog}
         handleClose={() => setIsOpenCreateEventDialog(false)}
+        onNeedReloadTable={() => {
+          setIsOpenCreateEventDialog(false)
+          setIsNeedReload(!isNeedReload)
+        }}
       />
     </CardContent>
   )

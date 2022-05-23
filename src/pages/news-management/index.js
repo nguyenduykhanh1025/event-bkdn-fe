@@ -15,6 +15,9 @@ import ArrowRightThinIcon from 'mdi-material-ui/ArrowRightThin'
 import EyeIcon from 'mdi-material-ui/Eye'
 
 import { useRouter } from 'next/router'
+import { useEffect, useState } from 'react'
+import { adminJournalService } from 'src/@core/services'
+import overlayLoading from 'src/@core/utils/overlay-loading'
 
 function createData(id, title, participantCount, participantRegisteredCount, startDate, endDate) {
   return { id, title, participantCount, participantRegisteredCount, startDate, endDate }
@@ -30,6 +33,23 @@ const rows = [
 
 const AccountSettings = () => {
   const router = useRouter()
+  const [journals, setJournals] = useState([])
+  useEffect(async () => {
+    await getJournalsFromAPI()
+  }, [])
+
+  const getJournalsFromAPI = async () => {
+    try {
+      overlayLoading.start()
+      const res = await adminJournalService.paginate({})
+      setJournals(res.data.data.items)
+      console.log(journals)
+    } catch (err) {
+      console.log(err)
+    } finally {
+      overlayLoading.stop()
+    }
+  }
 
   const onClickGoToDetail = () => {
     router.push('/news-management/12')
@@ -60,16 +80,19 @@ const AccountSettings = () => {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {rows.map(row => (
-                      <TableRow key={row.name} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                    {journals.map(row => (
+                      <TableRow
+                        key={row.name}
+                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                      >
                         <TableCell component='th' scope='row' align='center'>
                           {row.id}
                         </TableCell>
                         <TableCell align='left'>{row.title}</TableCell>
-                        <TableCell align='center'>{row.participantRegisteredCount}</TableCell>
-                        <TableCell align='center'>{row.participantCount}</TableCell>
+                        <TableCell align='center'>{row.description}</TableCell>
+                        <TableCell align='center'>{row.posted_at}</TableCell>
                         <TableCell align='center'>
-                          <Chip icon={<EyeIcon />} label={row.startDate} />
+                          <Chip icon={<EyeIcon />} label={row.count_view ? row.count_view : 0} />
                         </TableCell>
                         <TableCell align='center'>
                           <div>

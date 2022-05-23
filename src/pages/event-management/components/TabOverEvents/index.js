@@ -9,25 +9,73 @@ import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
 import { Pagination } from '@mui/material'
+import ArrowRightThinIcon from 'mdi-material-ui/ArrowRightThin'
+import { useRouter } from 'next/router'
+import { useEffect, useState } from 'react'
+import { adminEventService } from 'src/@core/services'
+import constants from 'src/@core/utils/constants'
+import overlayLoading from 'src/@core/utils/overlay-loading'
+import CreateEventDialog from 'src/@core/components/dialogs/create-event-dialog'
 
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein }
+const PARAMS_PAGINATE_DEFAULT = {
+  filter_column: 'status',
+  filter_data: constants.EVENT_STATUS.INCOMING_EVENT
 }
 
-const rows = [
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData('Eclair', 262, 16.0, 24, 6.0),
-  createData('Cupcake', 305, 3.7, 67, 4.3),
-  createData('Gingerbread', 356, 16.0, 49, 3.9)
-]
+const TabIncomingEvents = () => {
+  const [events, setEvents] = useState([])
+  const [isOpenCreateEventDialog, setIsOpenCreateEventDialog] = useState(false)
+  const [isNeedReload, setIsNeedReload] = useState(false)
 
-const TabInfo = () => {
+  const router = useRouter()
+
+  useEffect(async () => {
+    await getEventsIncomingFromAPI({
+      ...PARAMS_PAGINATE_DEFAULT
+    })
+  }, [isNeedReload])
+
+  const getEventsIncomingFromAPI = async params => {
+    try {
+      overlayLoading.start()
+      const res = await adminEventService.paginateEventOver({
+        ...params
+      })
+      setEvents(res.data.data.items)
+    } catch (err) {
+    } finally {
+      overlayLoading.stop()
+    }
+  }
+
+  const onClickGoToDetail = () => {
+    router.push('/event-management/12')
+  }
+
+  const handleChangePage = async (event, newPage) => {
+    const params_paginate = {
+      ...PARAMS_PAGINATE_DEFAULT,
+      page: newPage
+    }
+    await getEventsIncomingFromAPI(params_paginate)
+  }
+
+  const onClickCreateNewEvent = () => {
+    setIsOpenCreateEventDialog(true)
+  }
+
   return (
     <CardContent>
       <Grid container spacing={7}>
         <Grid item xs={12}>
-          <Button variant='contained' sx={{ marginRight: 3.5, float: 'right' }}>
+          <Button
+            variant='contained'
+            sx={{
+              marginRight: 3.5,
+              float: 'right'
+            }}
+            onClick={onClickCreateNewEvent}
+          >
             Thêm Sự Kiện
           </Button>
         </Grid>
@@ -36,23 +84,43 @@ const TabInfo = () => {
             <Table sx={{ minWidth: 650 }} aria-label='simple table'>
               <TableHead>
                 <TableRow>
-                  <TableCell>Dessert (100g serving)</TableCell>
-                  <TableCell align='right'>Calories</TableCell>
-                  <TableCell align='right'>Fat&nbsp;(g)</TableCell>
-                  <TableCell align='right'>Carbs&nbsp;(g)</TableCell>
-                  <TableCell align='right'>Protein&nbsp;(g)</TableCell>
+                  <TableCell align='center'>ID</TableCell>
+                  <TableCell align='left'>Tiêu Đề</TableCell>
+                  <TableCell align='center'>SL.Tham Gia</TableCell>
+                  <TableCell align='center'>SL.Đã Đăng Kí</TableCell>
+                  <TableCell align='center'>Bắt Đầu</TableCell>
+                  <TableCell align='center'>Kết Thúc</TableCell>
+                  <TableCell align='center'>Actions</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rows.map(row => (
-                  <TableRow key={row.name} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                    <TableCell component='th' scope='row'>
-                      {row.name}
+                {events.map(row => (
+                  <TableRow
+                    key={row.id}
+                    sx={{
+                      '&:last-child td, &:last-child th': { border: 0 }
+                    }}
+                  >
+                    <TableCell component='th' scope='row' align='center'>
+                      {row.id}
                     </TableCell>
-                    <TableCell align='right'>{row.calories}</TableCell>
-                    <TableCell align='right'>{row.fat}</TableCell>
-                    <TableCell align='right'>{row.carbs}</TableCell>
-                    <TableCell align='right'>{row.protein}</TableCell>
+                    <TableCell align='left'>{row.title}</TableCell>
+                    <TableCell align='center'>{row.count_need_participate}</TableCell>
+                    <TableCell align='center'>{row.count_registered}</TableCell>
+                    <TableCell align='center'>{row.start_at}</TableCell>
+                    <TableCell align='center'>{row.end_at}</TableCell>
+                    <TableCell align='center'>
+                      <div>
+                        <Button
+                          variant='outlined'
+                          size='small'
+                          endIcon={<ArrowRightThinIcon />}
+                          onClick={onClickGoToDetail}
+                        >
+                          Chi Tiết
+                        </Button>
+                      </div>
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -60,11 +128,24 @@ const TabInfo = () => {
           </TableContainer>
         </Grid>
         <Grid item xs={12}>
-          <Pagination count={10} sx={{ float: 'right' }} color='primary' />
+          <Pagination
+            count={10}
+            sx={{ float: 'right' }}
+            color='primary'
+            onChange={handleChangePage}
+          />
         </Grid>
       </Grid>
+      <CreateEventDialog
+        open={isOpenCreateEventDialog}
+        handleClose={() => setIsOpenCreateEventDialog(false)}
+        onNeedReloadTable={() => {
+          setIsOpenCreateEventDialog(false)
+          setIsNeedReload(!isNeedReload)
+        }}
+      />
     </CardContent>
   )
 }
 
-export default TabInfo
+export default TabIncomingEvents

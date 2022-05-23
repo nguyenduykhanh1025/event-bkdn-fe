@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import TitleHeaderPage from 'src/@core/components/title-header-page'
 import Card from '@mui/material/Card'
@@ -26,13 +26,32 @@ import DeleteIcon from 'mdi-material-ui/Delete'
 import Slide from '@mui/material/Slide'
 import ParticipantsEventDialog from 'src/@core/components/dialogs/participants-event-dialog'
 import AccountMultiplePlusIcon from 'mdi-material-ui/AccountMultiplePlus'
+import { adminEventService } from 'src/@core/services'
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction='up' ref={ref} {...props} />
 })
 
 const EventManagementDetail = props => {
+  const [eventId, setEventId] = useState(
+    window.location.href.split('/')[window.location.href.split('/').length - 2]
+  )
   const [open, setOpen] = useState(false)
+  const [eventDetail, setEventDetail] = useState({})
+
+  useEffect(async () => {
+    console.log('------------')
+    await getEventByID()
+  }, [])
+
+  const getEventByID = async () => {
+    try {
+      const res = await adminEventService.show(eventId)
+      setEventDetail(res.data.data)
+    } catch (err) {
+    } finally {
+    }
+  }
 
   const handleClickOpen = () => {
     setOpen(true)
@@ -80,12 +99,22 @@ const EventManagementDetail = props => {
                       </Button>
                     </span>
                     <span className='ml-2'>
-                      <Button variant='contained' size='small' startIcon={<ApplicationEditIcon />} color='secondary'>
+                      <Button
+                        variant='contained'
+                        size='small'
+                        startIcon={<ApplicationEditIcon />}
+                        color='secondary'
+                      >
                         Sửa
                       </Button>
                     </span>
                     <span className='ml-2'>
-                      <Button variant='contained' size='small' color='error' startIcon={<DeleteIcon />}>
+                      <Button
+                        variant='contained'
+                        size='small'
+                        color='error'
+                        startIcon={<DeleteIcon />}
+                      >
                         Xóa
                       </Button>
                     </span>
@@ -93,63 +122,57 @@ const EventManagementDetail = props => {
                 </Grid>
                 <Grid item xs={12}>
                   <span className='mr-2'>Tiêu Đề:</span>
-                  <span className='font-bold'>Đến hẹn lại lên, chương trình trao đổi hợp tác sinh viên</span>
+                  <span className='font-bold'>{eventDetail.title}</span>
                 </Grid>
                 <Grid item xs={12}>
                   <Divider />
                 </Grid>
                 <Grid item xs={6}>
                   <span className='mr-2'>SL.Tham Gia:</span>
-                  <span className='font-bold'>6</span>
+                  <span className='font-bold'>{eventDetail.count_need_participate}</span>
                 </Grid>
                 <Grid item xs={6}>
                   <span className='mr-2'>SL.Đã Đăng Kí:</span>
-                  <span className='font-bold'>6</span>
+                  <span className='font-bold'>{eventDetail.count_registered}</span>
                 </Grid>
                 <Grid item xs={12}>
                   <Divider />
                 </Grid>
                 <Grid item xs={6}>
                   <span className='mr-2'>TG.Bắt Đầu:</span>
-                  <span className='font-bold'>09:30 20-12-1998</span>
+                  <span className='font-bold'>{eventDetail.start_at}</span>
                 </Grid>
                 <Grid item xs={6}>
                   <span className='mr-2'>TG.Kết Thúc:</span>
-                  <span className='font-bold'>09:30 20-12-1998</span>
+                  <span className='font-bold'>{eventDetail.end_at}</span>
                 </Grid>
                 <Grid item xs={12}>
                   <Divider />
                 </Grid>
                 <Grid item xs={12}>
                   <span className='mr-2'>Nội Dung:</span>
-                  <span className='font-bold'>
-                    Đến hẹn lại lên, chương trình trao đổi hợp tác sinh viên giữa Trường Đại học Bách Khoa (DUT) và
-                    Trường Đại học kỹ thuật Singapore (Singapore Polytechnic, SP) lại chuẩn bị diễn ra. Đây là một
-                    chương trình rất hấp dẫn thú vị để các bạn sinh viên năng động DUT có cơ hội trao đổi, hợp tác, học
-                    hỏi với trường đại học quốc tế. Cụ thể, trong chương trình này các bạn có cơ hội học hỏi các khía
-                    cạnh về Xã hội, kinh tế, chính sách trong khu vực ASEAN.
-                  </span>
+                  <span className='font-bold'>{eventDetail.description}</span>
                 </Grid>
                 <Grid item xs={12}>
                   <Divider />
                 </Grid>
                 <Grid item xs={12}>
                   <span className='mr-2'>Địa Điểm:</span>
-                  <span className='font-bold'>Trường Bách Khoa Đà Nẵng</span>
+                  <span className='font-bold'>{eventDetail.address}</span>
                 </Grid>
                 <Grid item xs={12}>
                   <Divider />
                 </Grid>
                 <Grid item xs={12}>
                   <span className='mr-2'>Đối tượng tham gia:</span>
-                  <span className='font-bold'>sinh viên năm 1-3</span>
+                  <span className='font-bold'>{eventDetail.description_participant}</span>
                 </Grid>
                 <Grid item xs={12}>
                   <Divider />
                 </Grid>
                 <Grid item xs={12}>
                   <span className='mr-2'>Yêu cầu:</span>
-                  <span className='font-bold'>năng lực ngoại ngữ tốt, có kiến thức về kinh tế-chính trị-xã hội </span>
+                  <span className='font-bold'>{eventDetail.description_required}</span>
                 </Grid>
                 <Grid item xs={12}>
                   <Divider />
