@@ -21,6 +21,7 @@ import {
 } from '@mui/material'
 import FileIcon from 'mdi-material-ui/File'
 import EyeIcon from 'mdi-material-ui/Eye'
+import QrcodeIcon from 'mdi-material-ui/Qrcode'
 import ApplicationEditIcon from 'mdi-material-ui/ApplicationEdit'
 import DeleteIcon from 'mdi-material-ui/Delete'
 import Slide from '@mui/material/Slide'
@@ -29,6 +30,8 @@ import AccountMultiplePlusIcon from 'mdi-material-ui/AccountMultiplePlus'
 import { adminEventService } from 'src/@core/services'
 import { showConfirm } from 'src/@core/utils/alert-notify-helper'
 import CreateEventDialog from 'src/@core/components/dialogs/create-event-dialog'
+import IconButton from '@mui/material/IconButton'
+import QrCodeInviteParticipantDialog from 'src/@core/components/dialogs/qr-code-invite-participant-dialog'
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction='up' ref={ref} {...props} />
@@ -43,6 +46,7 @@ const EventManagementDetail = props => {
   const [open, setOpen] = useState(false)
   const [eventDetail, setEventDetail] = useState({})
   const [isOpenCreateEventDialog, setIsOpenCreateEventDialog] = useState(false)
+  const [isOpenInviteParticipantByQrCode, setIsOpenInviteParticipantByQrCode] = useState(false)
 
   useEffect(async () => {
     await getEventByID()
@@ -142,16 +146,20 @@ const EventManagementDetail = props => {
                         color='error'
                         startIcon={<DeleteIcon />}
                         onClick={onCLickDeleteEvent}
-                        disabled={
-                          new Date(eventDetail.end_at) < new Date()
-                            ? // &&
-                              // new Date(eventDetail.start_at) > new Date()
-                              true
-                            : false
-                        }
+                        disabled={new Date(eventDetail.end_at) < new Date() ? true : false}
                       >
                         Xóa
                       </Button>
+                    </span>
+                    <span className='ml-2'>
+                      <IconButton
+                        color='info'
+                        aria-label='upload picture'
+                        component='span'
+                        onClick={() => setIsOpenInviteParticipantByQrCode(true)}
+                      >
+                        <QrcodeIcon />
+                      </IconButton>
                     </span>
                   </div>
                 </Grid>
@@ -316,6 +324,10 @@ const EventManagementDetail = props => {
             setIsOpenCreateEventDialog(false)
           }}
           data={eventDetail}
+        />
+        <QrCodeInviteParticipantDialog
+          open={isOpenInviteParticipantByQrCode}
+          handleClose={() => setIsOpenInviteParticipantByQrCode(false)}
         />
       </div>
     </>
