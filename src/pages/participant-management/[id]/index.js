@@ -14,12 +14,31 @@ import DeleteIcon from 'mdi-material-ui/Delete'
 import AlertCircleIcon from 'mdi-material-ui/AlertCircle'
 import Slide from '@mui/material/Slide'
 import ParticipantsEventDialog from 'src/@core/components/dialogs/participants-event-dialog'
+import { showConfirm } from 'src/@core/utils/alert-notify-helper'
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction='up' ref={ref} {...props} />
 })
 
 const eventManagementDetail = props => {
+  const onCLickDeleteUser = () => {
+    showConfirm(
+      'Bạn muốn xóa trường này',
+      async () => {
+        try {
+          overlayLoading.start()
+          router.back()
+        } catch (err) {
+        } finally {
+          overlayLoading.stop()
+        }
+      },
+      () => {
+        console.log('oh no')
+      }
+    )
+  }
+
   return (
     <>
       <TitleHeaderPage title='Thông Tin Chi Tiết' />
@@ -37,8 +56,14 @@ const eventManagementDetail = props => {
                       </Button>
                     </span>
                     <span className='ml-2'>
-                      <Button variant='contained' size='small' color='error' startIcon={<AlertCircleIcon />}>
-                        Disable
+                      <Button
+                        variant='contained'
+                        size='small'
+                        color='error'
+                        startIcon={<AlertCircleIcon />}
+                        onClick={onCLickDeleteUser}
+                      >
+                        Xóa
                       </Button>
                     </span>
                   </div>
@@ -96,11 +121,7 @@ const eventManagementDetail = props => {
         <Grid item xs={4}>
           <Grid container spacing={7}>
             <Grid item xs={12}>
-              <img
-                src='https://cdn.eva.vn/upload/2-2019/images/2019-04-28/con-gai-cung-va-nguoi-tinh-trong-mong-cua-kim-dung-ai-moi-la-nguyen-mau-tieu-long-nu-1-1556467395-210-width650height433.jpg'
-                loading='lazy'
-                className='rounded'
-              />
+              <img src='/images/avatars/1.png' loading='lazy' className='rounded' />
             </Grid>
           </Grid>
         </Grid>

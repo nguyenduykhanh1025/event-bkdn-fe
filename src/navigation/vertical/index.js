@@ -11,7 +11,7 @@ import AccountGroup from 'mdi-material-ui/AccountGroup'
 const navigation = () => {
   return [
     {
-      title: 'Dashboard',
+      title: 'Trang Chủ',
       icon: HomeOutline,
       path: '/'
     },
@@ -29,7 +29,7 @@ const navigation = () => {
       path: '/news-management'
     },
     {
-      title: 'User',
+      title: 'Người Tham Gia',
       icon: AccountGroup,
       path: '/participant-management'
     },
@@ -38,28 +38,28 @@ const navigation = () => {
     },
 
     {
-      title: 'Account Settings',
+      title: 'Cài Đặt Tài Khoản',
       icon: AccountCogOutline,
       path: '/account-settings'
     },
-    {
-      title: 'Login',
-      icon: Login,
-      path: '/pages/login',
-      openInNewTab: true
-    },
-    {
-      title: 'Register',
-      icon: AccountPlusOutline,
-      path: '/pages/register',
-      openInNewTab: true
-    },
-    {
-      title: 'Error',
-      icon: AlertCircleOutline,
-      path: '/pages/error',
-      openInNewTab: true
-    }
+    // {
+    //   title: 'Login',
+    //   icon: Login,
+    //   path: '/pages/login',
+    //   openInNewTab: true
+    // },
+    // {
+    //   title: 'Register',
+    //   icon: AccountPlusOutline,
+    //   path: '/pages/register',
+    //   openInNewTab: true
+    // },
+    // {
+    //   title: 'Error',
+    //   icon: AlertCircleOutline,
+    //   path: '/pages/error',
+    //   openInNewTab: true
+    // }
   ]
 }
 

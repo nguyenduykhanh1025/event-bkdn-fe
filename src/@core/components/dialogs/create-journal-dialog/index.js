@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import TextField from '@mui/material/TextField'
 import Dialog from '@mui/material/Dialog'
@@ -15,10 +15,15 @@ import overlayLoading from 'src/@core/utils/overlay-loading'
 // import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker'
 
 const CreateJournalDialog = props => {
-  const { open, handleClose, onNeedReloadTable } = props
+  const { open, handleClose, onNeedReloadTable, data } = props
 
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
+
+  useEffect(() => {
+    setTitle(data ? data.title : '')
+    setDescription(data ? data.description : '')
+  }, [data])
 
   const handleChange = newValue => {
     setValue(newValue)
@@ -78,7 +83,7 @@ const CreateJournalDialog = props => {
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Thoát</Button>
-        <Button onClick={handleCreate}>Tạo</Button>
+        <Button onClick={handleCreate}>{data ? 'Sửa' : 'Tạo'}</Button>
       </DialogActions>
     </Dialog>
   )

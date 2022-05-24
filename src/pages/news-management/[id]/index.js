@@ -30,6 +30,7 @@ import { adminJournalService } from 'src/@core/services'
 import { showConfirm } from 'src/@core/utils/alert-notify-helper'
 import router from 'next/router'
 import overlayLoading from 'src/@core/utils/overlay-loading'
+import CreateJournalDialog from 'src/@core/components/dialogs/create-journal-dialog'
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction='up' ref={ref} {...props} />
@@ -37,8 +38,11 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 const eventManagementDetail = props => {
   const [journalId, setJournalId] = useState(
-    window.location.href.split('/')[window.location.href.split('/').length - 2]
+    typeof window !== 'undefined'
+      ? window.location.href.split('/')[window.location.href.split('/').length - 2]
+      : null
   )
+  const [isOpenCreateJournalDialog, setIsOpenCreateJournalDialog] = useState(false)
   const [journalDetail, setJournalDetail] = useState({})
 
   useEffect(async () => {
@@ -49,7 +53,6 @@ const eventManagementDetail = props => {
     try {
       const res = await adminJournalService.show(journalId)
       setJournalDetail(res.data.data)
-      console.log(res)
     } catch (err) {
     } finally {
     }
@@ -95,6 +98,7 @@ const eventManagementDetail = props => {
                         size='small'
                         startIcon={<ApplicationEditIcon />}
                         color='secondary'
+                        onClick={() => setIsOpenCreateJournalDialog(true)}
                       >
                         Sửa
                       </Button>
@@ -138,25 +142,33 @@ const eventManagementDetail = props => {
           <Grid container spacing={7}>
             <Grid item xs={12}>
               <img
-                src='https://scontent.fhan3-2.fna.fbcdn.net/v/t39.30808-6/278186167_1957381551129310_5114887276944770370_n.jpg?_nc_cat=101&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=weRApz55lmAAX8ovuTW&tn=BefvewHra5AZP9lT&_nc_ht=scontent.fhan3-2.fna&oh=00_AT_DCF_EK06dp-leJoDdfrGA2nDq2Yx1bgSKfbZacVPq_g&oe=62663B30'
+                src='https://scontent.fhan4-3.fna.fbcdn.net/v/t39.30808-6/281944709_1978609992339799_6201285863621141299_n.jpg?_nc_cat=103&ccb=1-7&_nc_sid=174925&_nc_ohc=9u4FQalwyYUAX90Yxoo&_nc_ht=scontent.fhan4-3.fna&oh=00_AT9WqbsQ5RZ2KupFzDCOmA7wkl4z0XdnryPoHxQ0V7BCTg&oe=62917D6B'
                 loading='lazy'
               />
             </Grid>
             <Grid item xs={6}>
               <img
-                src='https://scontent.fhan3-3.fna.fbcdn.net/v/t39.30808-6/278721602_1954934488040683_2123934332847918283_n.jpg?_nc_cat=111&ccb=1-5&_nc_sid=730e14&_nc_ohc=6MtqdSL6XecAX8UqE_3&_nc_ht=scontent.fhan3-3.fna&oh=00_AT9DmuWiKI8Ij3ilIUiJB38Bz_J7_wVQnK2kTgGcLB_VDQ&oe=626528DE'
+                src='https://scontent.fhan4-1.fna.fbcdn.net/v/t39.30808-6/279889832_1974095076124624_5455312005040254126_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=174925&_nc_ohc=Yya14nlM_14AX_lhKhP&_nc_oc=AQkp_Xa_O8Ggj4dCj4f-OEzOzicuwXTOIvT0m9vzDz8ITlqsJ8WTnNHsp_5_lPFbyCM&_nc_ht=scontent.fhan4-1.fna&oh=00_AT8lSMc_vJXGhg8bg0y7fCEPzfx_ghVElXezDTxEvOXc4Q&oe=62909866'
                 loading='lazy'
               />
             </Grid>
             <Grid item xs={6}>
               <img
-                src='https://scontent.fhan3-5.fna.fbcdn.net/v/t39.30808-6/278723958_1954934388040693_2700868716114681778_n.jpg?_nc_cat=109&ccb=1-5&_nc_sid=730e14&_nc_ohc=SowzhOV49kAAX8tjhaO&tn=BefvewHra5AZP9lT&_nc_ht=scontent.fhan3-5.fna&oh=00_AT8BaoKVLHT6MPDkiBF57y02iSvNZ5hZVyqwcc5G3krr4Q&oe=6266128C'
+                src='https://scontent.fhan4-3.fna.fbcdn.net/v/t39.30808-6/280648907_1973153322885466_4478380045121648335_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=174925&_nc_ohc=mn1VsKKAM4EAX8ocZc6&tn=BefvewHra5AZP9lT&_nc_ht=scontent.fhan4-3.fna&oh=00_AT_JbhtoA0YMtMCuhOJi-sLXTcs6yl_iLmScEj57uueedA&oe=6291F6CA'
                 loading='lazy'
               />
             </Grid>
           </Grid>
         </Grid>
       </Grid>
+      <CreateJournalDialog
+        open={isOpenCreateJournalDialog}
+        handleClose={() => setIsOpenCreateJournalDialog(false)}
+        onNeedReloadTable={() => {
+          setIsOpenCreateJournalDialog(false)
+        }}
+        data={journalDetail}
+      />
     </>
   )
 }

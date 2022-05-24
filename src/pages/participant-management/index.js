@@ -13,23 +13,79 @@ import { Avatar, Pagination, Typography } from '@mui/material'
 import TitleHeaderPage from 'src/@core/components/title-header-page'
 import ArrowRightThinIcon from 'mdi-material-ui/ArrowRightThin'
 import { useRouter } from 'next/router'
+import { adminUserService } from 'src/@core/services'
+import { useEffect, useState } from 'react'
+import overlayLoading from 'src/@core/utils/overlay-loading'
 
 function createData(id, name, mssv, phoneNumber, email, birthDate) {
   return { id, name, mssv, phoneNumber, email, birthDate }
 }
 
 const rows = [
-  createData(1, 'Nguyen Duy Khánh', '102160050', '0766735782', 'nguyenduykhanh125@gmail', '10-09-1998'),
-  createData(1, 'Nguyen Duy Khánh', '102160050', '0766735782', 'nguyenduykhanh125@gmail', '10-09-1998'),
-  createData(1, 'Nguyen Duy Khánh', '102160050', '0766735782', 'nguyenduykhanh125@gmail', '10-09-1998'),
-  createData(1, 'Nguyen Duy Khánh', '102160050', '0766735782', 'nguyenduykhanh125@gmail', '10-09-1998')
+  createData(
+    1,
+    'Nguyen Duy Khánh',
+    '102160050',
+    '0766735782',
+    'nguyenduykhanh125@gmail',
+    '10-09-1998'
+  ),
+  createData(
+    1,
+    'Nguyen Duy Khánh',
+    '102160050',
+    '0766735782',
+    'nguyenduykhanh125@gmail',
+    '10-09-1998'
+  ),
+  createData(
+    1,
+    'Nguyen Duy Khánh',
+    '102160050',
+    '0766735782',
+    'nguyenduykhanh125@gmail',
+    '10-09-1998'
+  ),
+  createData(
+    1,
+    'Nguyen Duy Khánh',
+    '102160050',
+    '0766735782',
+    'nguyenduykhanh125@gmail',
+    '10-09-1998'
+  )
 ]
 
 const AccountSettings = () => {
   const router = useRouter()
+  const [users, setUsers] = useState([])
+  const [meta, setMeta] = useState({})
+
+  useEffect(async () => {
+    await getJournalsFromAPI({})
+  }, [])
 
   const onClickGoToDetail = () => {
     router.push('/participant-management/12')
+  }
+
+  const getJournalsFromAPI = async params => {
+    try {
+      overlayLoading.start()
+      const res = await adminUserService.paginateParticipant(params)
+      setUsers(res.data.data.items)
+      setMeta(res.data.data.meta)
+    } catch (err) {
+    } finally {
+      overlayLoading.stop()
+    }
+  }
+
+  const handleChangePage = async (event, newPage) => {
+    const params_paginate = {
+      page: newPage
+    }
+    await getJournalsFromAPI(params_paginate)
   }
 
   return (
@@ -54,24 +110,24 @@ const AccountSettings = () => {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {rows.map(row => (
-                      <TableRow key={row.name} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                    {users.map(row => (
+                      <TableRow
+                        key={row.name}
+                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                      >
                         <TableCell component='th' scope='row' align='center'>
                           {row.id}
                         </TableCell>
                         <TableCell align='center'>
                           <div className='m-auto w-max'>
-                            <Avatar
-                              alt='Remy Sharp'
-                              src='https://cdn.eva.vn/upload/2-2019/images/2019-04-28/con-gai-cung-va-nguoi-tinh-trong-mong-cua-kim-dung-ai-moi-la-nguyen-mau-tieu-long-nu-1-1556467395-210-width650height433.jpg'
-                            />
+                            <Avatar alt='Remy Sharp' src='/images/avatars/1.png' />
                           </div>
                         </TableCell>
-                        <TableCell align='left'>{row.name}</TableCell>
+                        <TableCell align='left'>{`${row.last_name} ${row.first_name}`}</TableCell>
                         <TableCell align='center'>{row.mssv}</TableCell>
                         <TableCell align='left'>{row.email}</TableCell>
-                        <TableCell align='center'>{row.phoneNumber}</TableCell>
-                        <TableCell align='center'>{row.birthDate}</TableCell>
+                        <TableCell align='center'>{row.phone_number}</TableCell>
+                        <TableCell align='center'>{row.birth_date}</TableCell>
                         <TableCell align='center'>
                           <div>
                             <Button
@@ -91,7 +147,12 @@ const AccountSettings = () => {
               </TableContainer>
             </Grid>
             <Grid item xs={12}>
-              <Pagination count={10} sx={{ float: 'right' }} color='primary' />
+              <Pagination
+                count={parseInt(meta.total / meta.perPage)}
+                sx={{ float: 'right' }}
+                color='primary'
+                onChange={handleChangePage}
+              />
             </Grid>
           </Grid>
         </CardContent>

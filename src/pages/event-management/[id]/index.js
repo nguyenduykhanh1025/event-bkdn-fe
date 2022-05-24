@@ -27,6 +27,8 @@ import Slide from '@mui/material/Slide'
 import ParticipantsEventDialog from 'src/@core/components/dialogs/participants-event-dialog'
 import AccountMultiplePlusIcon from 'mdi-material-ui/AccountMultiplePlus'
 import { adminEventService } from 'src/@core/services'
+import { showConfirm } from 'src/@core/utils/alert-notify-helper'
+import CreateEventDialog from 'src/@core/components/dialogs/create-event-dialog'
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction='up' ref={ref} {...props} />
@@ -34,10 +36,13 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 const EventManagementDetail = props => {
   const [eventId, setEventId] = useState(
-    window.location.href.split('/')[window.location.href.split('/').length - 2]
+    typeof window !== 'undefined'
+      ? window.location.href.split('/')[window.location.href.split('/').length - 2]
+      : null
   )
   const [open, setOpen] = useState(false)
   const [eventDetail, setEventDetail] = useState({})
+  const [isOpenCreateEventDialog, setIsOpenCreateEventDialog] = useState(false)
 
   useEffect(async () => {
     await getEventByID()
@@ -64,6 +69,26 @@ const EventManagementDetail = props => {
     handleClickOpen()
   }
 
+  const onCLickDeleteEvent = () => {
+    showConfirm(
+      'Bạn muốn xóa trường này',
+      async () => {
+        try {
+          overlayLoading.start()
+
+          await adminJournalService.delete(journalId)
+          router.back()
+        } catch (err) {
+        } finally {
+          overlayLoading.stop()
+        }
+      },
+      () => {
+        console.log('oh no')
+      }
+    )
+  }
+  console.log('eventDetail', new Date(eventDetail.end_at) > new Date())
   return (
     <>
       <TitleHeaderPage title='Sự Kiện Chi Tiết' />
@@ -93,6 +118,7 @@ const EventManagementDetail = props => {
                         color='info'
                         startIcon={<AccountMultiplePlusIcon />}
                         onClick={onClickWatchParticipant}
+                        disabled={new Date(eventDetail.end_at) < new Date() ? true : false}
                       >
                         Mời Thành Viên
                       </Button>
@@ -103,6 +129,8 @@ const EventManagementDetail = props => {
                         size='small'
                         startIcon={<ApplicationEditIcon />}
                         color='secondary'
+                        disabled={new Date(eventDetail.end_at) < new Date() ? true : false}
+                        onClick={() => setIsOpenCreateEventDialog(true)}
                       >
                         Sửa
                       </Button>
@@ -113,6 +141,14 @@ const EventManagementDetail = props => {
                         size='small'
                         color='error'
                         startIcon={<DeleteIcon />}
+                        onClick={onCLickDeleteEvent}
+                        disabled={
+                          new Date(eventDetail.end_at) < new Date()
+                            ? // &&
+                              // new Date(eventDetail.start_at) > new Date()
+                              true
+                            : false
+                        }
                       >
                         Xóa
                       </Button>
@@ -244,19 +280,19 @@ const EventManagementDetail = props => {
           <Grid container spacing={7}>
             <Grid item xs={12}>
               <img
-                src='https://scontent.fhan3-2.fna.fbcdn.net/v/t39.30808-6/278709738_1954934534707345_4681202616317384827_n.jpg?_nc_cat=107&ccb=1-5&_nc_sid=730e14&_nc_ohc=dOEz6H_SZ-4AX_qCbuy&tn=BefvewHra5AZP9lT&_nc_ht=scontent.fhan3-2.fna&oh=00_AT-XdZRXEITNaJjC7VurVOlouljfHOJTLwjkjeHSrChZ-Q&oe=626681A5'
+                src='https://scontent.fhan4-3.fna.fbcdn.net/v/t39.30808-6/282134769_2540910662709814_3665686713416526141_n.jpg?stp=dst-jpg_p526x296&_nc_cat=103&ccb=1-7&_nc_sid=730e14&_nc_ohc=xziWMnIAWUIAX9Wwe8m&_nc_ht=scontent.fhan4-3.fna&oh=00_AT-Gv1xUHat2LgKQTdpChsFQ4vzZX9Df8k8zF_G_-IVy0g&oe=6290C695'
                 loading='lazy'
               />
             </Grid>
             <Grid item xs={6}>
               <img
-                src='https://scontent.fhan3-3.fna.fbcdn.net/v/t39.30808-6/278721602_1954934488040683_2123934332847918283_n.jpg?_nc_cat=111&ccb=1-5&_nc_sid=730e14&_nc_ohc=6MtqdSL6XecAX8UqE_3&_nc_ht=scontent.fhan3-3.fna&oh=00_AT9DmuWiKI8Ij3ilIUiJB38Bz_J7_wVQnK2kTgGcLB_VDQ&oe=626528DE'
+                src='https://scontent.fhan4-1.fna.fbcdn.net/v/t39.30808-6/280892324_2540492252751655_3770378080944862013_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=730e14&_nc_ohc=Mtj66Oo8ZDoAX_FDppp&_nc_oc=AQmEkPqJRzJLaHLCToGaBPiDSZ6dwgmLrQG6y_QUKLBqEDRa3fmNbcX2ft5G672XYG4&_nc_ht=scontent.fhan4-1.fna&oh=00_AT_1EHhWwcQ5f12d803yf8TDOyJCPuU8qxZftT3aSK8ydg&oe=6291256A'
                 loading='lazy'
               />
             </Grid>
             <Grid item xs={6}>
               <img
-                src='https://scontent.fhan3-5.fna.fbcdn.net/v/t39.30808-6/278723958_1954934388040693_2700868716114681778_n.jpg?_nc_cat=109&ccb=1-5&_nc_sid=730e14&_nc_ohc=SowzhOV49kAAX8tjhaO&tn=BefvewHra5AZP9lT&_nc_ht=scontent.fhan3-5.fna&oh=00_AT8BaoKVLHT6MPDkiBF57y02iSvNZ5hZVyqwcc5G3krr4Q&oe=6266128C'
+                src='https://scontent.fhan4-2.fna.fbcdn.net/v/t39.30808-6/280721028_392662496207386_6004326837743907504_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=730e14&_nc_ohc=L46ZPETk2HEAX-DUgRN&tn=BefvewHra5AZP9lT&_nc_ht=scontent.fhan4-2.fna&oh=00_AT9cUwNd2M5jDqFaPRbAA7tTcrNjTDBflNPtzjORkyJ2og&oe=62920124'
                 loading='lazy'
               />
             </Grid>
@@ -273,6 +309,14 @@ const EventManagementDetail = props => {
         >
           <ParticipantsEventDialog handleClose={handleClose} />
         </Dialog>
+        <CreateEventDialog
+          open={isOpenCreateEventDialog}
+          handleClose={() => setIsOpenCreateEventDialog(false)}
+          onNeedReloadTable={() => {
+            setIsOpenCreateEventDialog(false)
+          }}
+          data={eventDetail}
+        />
       </div>
     </>
   )

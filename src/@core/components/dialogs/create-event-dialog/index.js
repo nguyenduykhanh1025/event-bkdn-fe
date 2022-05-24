@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import TextField from '@mui/material/TextField'
 import Dialog from '@mui/material/Dialog'
@@ -12,20 +12,39 @@ import { FormTitle } from '../../titles'
 import Grid from '@mui/material/Grid'
 import { adminEventService, eventService } from 'src/@core/services'
 import overlayLoading from 'src/@core/utils/overlay-loading'
-// import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker'
+import moment from 'moment'
 
 const CreateEventDialog = props => {
-  const { open, handleClose, onNeedReloadTable} = props
+  const { open, handleClose, onNeedReloadTable, data } = props
 
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [address, setAddress] = useState('')
   const [descriptionParticipant, setDescriptionParticipant] = useState('')
   const [descriptionRequired, setDescriptionRequired] = useState('')
-  const [countNeedParticipate, setCountNeedParticipate] = useState(0)
-  const [startDate, setStartDate] = useState(new Date('2014-08-18T21:11:54'))
-  const [endDate, setEndDate] = useState(new Date('2014-08-18T21:11:54'))
+  const [countNeedParticipate, setCountNeedParticipate] = useState('')
 
+  const [startDate, setStartDate] = useState(null)
+  const [endDate, setEndDate] = useState(null)
+
+  useEffect(() => {
+    setTitle(data ? data.title : '')
+    setDescription(data ? data.description : '')
+    setAddress(data ? data.address : '')
+    setDescriptionParticipant(data ? data.description_participant : '')
+    setDescriptionRequired(data ? data.description_required : '')
+    setCountNeedParticipate(data ? data.count_need_participate : '')
+    setStartDate(
+      data
+        ? moment(new Date(data.start_at)).format('YYYY-MM-DD')
+        : moment(new Date()).format('YYYY-MM-DD')
+    )
+    setEndDate(
+      data
+        ? moment(new Date(data.end_at)).format('YYYY-MM-DD')
+        : moment(new Date()).format('YYYY-MM-DD')
+    )
+  }, [data])
   const handleChange = newValue => {
     setValue(newValue)
   }
@@ -145,7 +164,6 @@ const CreateEventDialog = props => {
             <TextField
               id='date'
               type='date'
-              defaultValue='2017-05-24'
               sx={{ width: '100%' }}
               InputLabelProps={{
                 shrink: true
@@ -161,7 +179,6 @@ const CreateEventDialog = props => {
             <TextField
               id='date'
               type='date'
-              defaultValue='2017-05-24'
               sx={{ width: '100%' }}
               InputLabelProps={{
                 shrink: true
@@ -177,7 +194,7 @@ const CreateEventDialog = props => {
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Thoát</Button>
-        <Button onClick={handleCreate}>Tạo</Button>
+        <Button onClick={handleCreate}>{data ? 'Sửa' : 'Tạo'}</Button>
       </DialogActions>
     </Dialog>
   )

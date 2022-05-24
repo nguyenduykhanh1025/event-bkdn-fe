@@ -53,8 +53,8 @@ const TabIncomingEvents = () => {
     }
   }
 
-  const onClickGoToDetail = () => {
-    router.push('/event-management/12')
+  const onClickGoToDetail = id => {
+    router.push(`/event-management/${id}`)
   }
 
   const handleChangePage = async (event, newPage) => {
@@ -120,7 +120,9 @@ const TabIncomingEvents = () => {
                           variant='outlined'
                           size='small'
                           endIcon={<ArrowRightThinIcon />}
-                          onClick={onClickGoToDetail}
+                          onClick={() => {
+                            onClickGoToDetail(row.id)
+                          }}
                         >
                           Chi Tiết
                         </Button>

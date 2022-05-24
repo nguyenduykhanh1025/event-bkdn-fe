@@ -35,6 +35,7 @@ const rows = [
 const AccountSettings = () => {
   const router = useRouter()
   const [journals, setJournals] = useState([])
+  const [meta, setMeta] = useState({})
   const [isOpenCreateJournalDialog, setIsOpenCreateJournalDialog] = useState(false)
   const [isNeedReload, setIsNeedReload] = useState(false)
 
@@ -47,6 +48,7 @@ const AccountSettings = () => {
       overlayLoading.start()
       const res = await adminJournalService.paginate({})
       setJournals(res.data.data.items)
+      setMeta(res.data.data.meta)
       console.log(journals)
     } catch (err) {
       console.log(err)
@@ -127,7 +129,11 @@ const AccountSettings = () => {
               </TableContainer>
             </Grid>
             <Grid item xs={12}>
-              <Pagination count={10} sx={{ float: 'right' }} color='primary' />
+              <Pagination
+                count={parseInt(meta.total / meta.perPage)}
+                sx={{ float: 'right' }}
+                color='primary'
+              />
             </Grid>
           </Grid>
         </CardContent>
