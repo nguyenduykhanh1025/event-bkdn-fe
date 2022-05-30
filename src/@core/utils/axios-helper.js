@@ -25,7 +25,7 @@ axiosClient.interceptors.response.use(
     return response
   },
   function (error) {
-    if (error.response.status === constants.HTTP_STATUS.HTTP_FORBIDDEN) {
+    if (error.response && error.response.status === constants.HTTP_STATUS.HTTP_FORBIDDEN) {
       Router.replace('/pages/login')
     }
     return Promise.reject(error)

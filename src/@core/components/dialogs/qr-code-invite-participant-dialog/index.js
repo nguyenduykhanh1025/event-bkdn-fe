@@ -10,22 +10,21 @@ import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import { FormTitle } from '../../titles'
 import Grid from '@mui/material/Grid'
-import { adminEventService, adminJournalService, eventService } from 'src/@core/services'
-import overlayLoading from 'src/@core/utils/overlay-loading'
+import QRCode from "react-qr-code";
 // import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker'
 
 const CreateJournalDialog = props => {
-  const { open, handleClose } = props
+  const { open, handleClose, eventId } = props
+  const [urlJoinEvent, setUrlJoinEvent] = useState(`http://192.168.1.3:3000/join-to-event/${eventId}`)
+  // useEffect(() => {
+  //   ReactDOM.render(<QRCode value="hey" />, document.getElementById("qr-code"));
+  // }, [])
 
   return (
     <Dialog open={open} onClose={handleClose} maxWidth='lg' fullWidth={true}>
       <DialogTitle>MỜI THÀNH VIÊN BẰNG QR CODE</DialogTitle>
       <DialogContent>
-        <img
-          src='https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/QR_code_for_mobile_English_Wikipedia.svg/1200px-QR_code_for_mobile_English_Wikipedia.svg.png'
-          loading='lazy'
-          className='w-1/4 m-auto'
-        />
+        <QRCode value={urlJoinEvent} className='w-1/4 m-auto' />
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Thoát</Button>

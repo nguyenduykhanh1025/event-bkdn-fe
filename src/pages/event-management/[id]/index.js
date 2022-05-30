@@ -328,6 +328,7 @@ const EventManagementDetail = props => {
         <QrCodeInviteParticipantDialog
           open={isOpenInviteParticipantByQrCode}
           handleClose={() => setIsOpenInviteParticipantByQrCode(false)}
+          eventId={eventId}
         />
       </div>
     </>
