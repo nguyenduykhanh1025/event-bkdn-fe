@@ -13,6 +13,10 @@ import Grid from '@mui/material/Grid'
 import { adminEventService, eventService } from 'src/@core/services'
 import overlayLoading from 'src/@core/utils/overlay-loading'
 import moment from 'moment'
+import { storage } from 'src/@core/utils/firebase'
+import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
+import { async } from '@firebase/util'
+// import Dropzone from 'react-dropzone'
 
 const CreateEventDialog = props => {
   const { open, handleClose, onNeedReloadTable, data } = props
@@ -26,6 +30,9 @@ const CreateEventDialog = props => {
 
   const [startDate, setStartDate] = useState(null)
   const [endDate, setEndDate] = useState(null)
+
+  const [imageAsFiles, setImageAsFiles] = useState([])
+  const [imagesAsUrl, setImagesAsUrl] = useState([])
 
   useEffect(() => {
     setTitle(data ? data.title : '')
@@ -45,11 +52,17 @@ const CreateEventDialog = props => {
         : moment(new Date()).format('YYYY-MM-DD')
     )
   }, [data])
+
   const handleChange = newValue => {
     setValue(newValue)
   }
 
   const handleCreate = async () => {
+    // TODO: upload anh chua xong, dang dich promise gi do
+    overlayLoading.start()
+
+    await updateImagesToFirebase()
+    console.log('imagesAsUrl', imagesAsUrl);
     const payload = {
       title: title,
       description: description,
@@ -59,17 +72,72 @@ const CreateEventDialog = props => {
       start_at: startDate,
       end_at: endDate,
       address: address,
-      images_str: 'OKE'
+      images_str: imagesAsUrl.join(',')
     }
 
     try {
-      overlayLoading.start()
       const res = await adminEventService.create(payload)
       onNeedReloadTable()
     } catch (err) {
     } finally {
       overlayLoading.stop()
     }
+  }
+
+  const updateImagesToFirebase = async () => {
+    for (let i = 0; i < imageAsFiles.length; ++i) {
+      await handleFireBaseUpload(imageAsFiles[i])
+    }
+  }
+
+  const handleImageAsFile1 = (e) => {
+    const image = e.target.files[0]
+    let imageAsFilesTemp = [...imageAsFiles]
+    imageAsFilesTemp[0] = image
+    setImageAsFiles(imageAsFilesTemp)
+  }
+
+  const handleImageAsFile2 = (e) => {
+    const image = e.target.files[0]
+    let imageAsFilesTemp = [...imageAsFiles]
+    imageAsFilesTemp[1] = image
+    setImageAsFiles(imageAsFilesTemp)
+  }
+
+  const handleImageAsFile3 = (e) => {
+    const image = e.target.files[0]
+    let imageAsFilesTemp = [...imageAsFiles]
+    imageAsFilesTemp[2] = image
+    setImageAsFiles(imageAsFilesTemp)
+  }
+
+  const handleFireBaseUpload = async (file) => {
+    const storageRef = ref(storage, `files/${file.name}`);
+    const uploadTask = uploadBytesResumable(storageRef, file);
+
+    uploadTask.on("state_changed",
+      (snapshot) => {
+        const progress =
+          Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+        console.log('progress', progress);
+      },
+      (error) => {
+        alert(error);
+      },
+      async () => {
+        const downloadURL = await getDownloadURL(uploadTask.snapshot.ref)
+        console.log('downloadURL', downloadURL);
+        const imagesAsUrlTemp = [...imagesAsUrl]
+        imagesAsUrlTemp.push(downloadURL)
+        setImagesAsUrl(imagesAsUrlTemp);
+        // .then((downloadURL) => {
+        //   const imagesAsUrlTemp = imagesAsUrl
+        //   imagesAsUrlTemp.push(downloadURL)
+        //   setImagesAsUrl(imagesAsUrlTemp);
+        //   // console.log(downloadURL)
+        // });
+      }
+    );
   }
 
   return (
@@ -190,7 +258,21 @@ const CreateEventDialog = props => {
             />
           </Grid>
         </Grid>
-        <FormTitle title='Yêu cầu thêm:' />
+        <FormTitle title='Tải ảnh 1:' />
+        <TextField
+          type="file"
+          onChange={handleImageAsFile1}
+        />
+        <FormTitle title='Tải ảnh 2:' />
+        <TextField
+          type="file"
+          onChange={handleImageAsFile2}
+        />
+        <FormTitle title='Tải ảnh 3:' />
+        <TextField
+          type="file"
+          onChange={handleImageAsFile3}
+        />
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Thoát</Button>
