@@ -47,6 +47,7 @@ const EventManagementDetail = props => {
   const [eventDetail, setEventDetail] = useState({})
   const [isOpenCreateEventDialog, setIsOpenCreateEventDialog] = useState(false)
   const [isOpenInviteParticipantByQrCode, setIsOpenInviteParticipantByQrCode] = useState(false)
+  const [images, setImages] = useState([])
 
   useEffect(async () => {
     await getEventByID()
@@ -56,9 +57,14 @@ const EventManagementDetail = props => {
     try {
       const res = await adminEventService.show(eventId)
       setEventDetail(res.data.data)
+      buildImageStr(res.data.data.images_str)
     } catch (err) {
     } finally {
     }
+  }
+
+  const buildImageStr = (imageStr) => {
+    setImages(imageStr.split(','))
   }
 
   const handleClickOpen = () => {
@@ -288,19 +294,19 @@ const EventManagementDetail = props => {
           <Grid container spacing={7}>
             <Grid item xs={12}>
               <img
-                src='https://scontent.fhan4-3.fna.fbcdn.net/v/t39.30808-6/282134769_2540910662709814_3665686713416526141_n.jpg?stp=dst-jpg_p526x296&_nc_cat=103&ccb=1-7&_nc_sid=730e14&_nc_ohc=xziWMnIAWUIAX9Wwe8m&_nc_ht=scontent.fhan4-3.fna&oh=00_AT-Gv1xUHat2LgKQTdpChsFQ4vzZX9Df8k8zF_G_-IVy0g&oe=6290C695'
+                src={images[0]}
                 loading='lazy'
               />
             </Grid>
             <Grid item xs={6}>
               <img
-                src='https://scontent.fhan4-1.fna.fbcdn.net/v/t39.30808-6/280892324_2540492252751655_3770378080944862013_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=730e14&_nc_ohc=Mtj66Oo8ZDoAX_FDppp&_nc_oc=AQmEkPqJRzJLaHLCToGaBPiDSZ6dwgmLrQG6y_QUKLBqEDRa3fmNbcX2ft5G672XYG4&_nc_ht=scontent.fhan4-1.fna&oh=00_AT_1EHhWwcQ5f12d803yf8TDOyJCPuU8qxZftT3aSK8ydg&oe=6291256A'
+                src={images.length >= 1 ? images[1] : null}
                 loading='lazy'
               />
             </Grid>
             <Grid item xs={6}>
               <img
-                src='https://scontent.fhan4-2.fna.fbcdn.net/v/t39.30808-6/280721028_392662496207386_6004326837743907504_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=730e14&_nc_ohc=L46ZPETk2HEAX-DUgRN&tn=BefvewHra5AZP9lT&_nc_ht=scontent.fhan4-2.fna&oh=00_AT9cUwNd2M5jDqFaPRbAA7tTcrNjTDBflNPtzjORkyJ2og&oe=62920124'
+                src={images.length >= 2 ? images[2] : null}
                 loading='lazy'
               />
             </Grid>

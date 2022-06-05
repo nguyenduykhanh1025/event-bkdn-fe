@@ -61,7 +61,7 @@ const CreateEventDialog = props => {
     // TODO: upload anh chua xong, dang dich promise gi do
     overlayLoading.start()
 
-    await updateImagesToFirebase()
+    // await updateImagesToFirebase()
     console.log('imagesAsUrl', imagesAsUrl);
     const payload = {
       title: title,
@@ -92,23 +92,26 @@ const CreateEventDialog = props => {
 
   const handleImageAsFile1 = (e) => {
     const image = e.target.files[0]
-    let imageAsFilesTemp = [...imageAsFiles]
-    imageAsFilesTemp[0] = image
-    setImageAsFiles(imageAsFilesTemp)
+    // let imageAsFilesTemp = [...imageAsFiles]
+    // imageAsFilesTemp[0] = image
+    // setImageAsFiles(imageAsFilesTemp)
+    handleFireBaseUpload(image)
   }
 
   const handleImageAsFile2 = (e) => {
     const image = e.target.files[0]
-    let imageAsFilesTemp = [...imageAsFiles]
-    imageAsFilesTemp[1] = image
-    setImageAsFiles(imageAsFilesTemp)
+    // let imageAsFilesTemp = [...imageAsFiles]
+    // imageAsFilesTemp[1] = image
+    // setImageAsFiles(imageAsFilesTemp)
+    handleFireBaseUpload(image)
   }
 
   const handleImageAsFile3 = (e) => {
     const image = e.target.files[0]
-    let imageAsFilesTemp = [...imageAsFiles]
-    imageAsFilesTemp[2] = image
-    setImageAsFiles(imageAsFilesTemp)
+    // let imageAsFilesTemp = [...imageAsFiles]
+    // imageAsFilesTemp[2] = image
+    // setImageAsFiles(imageAsFilesTemp)
+    handleFireBaseUpload(image)
   }
 
   const handleFireBaseUpload = async (file) => {
@@ -130,12 +133,7 @@ const CreateEventDialog = props => {
         const imagesAsUrlTemp = [...imagesAsUrl]
         imagesAsUrlTemp.push(downloadURL)
         setImagesAsUrl(imagesAsUrlTemp);
-        // .then((downloadURL) => {
-        //   const imagesAsUrlTemp = imagesAsUrl
-        //   imagesAsUrlTemp.push(downloadURL)
-        //   setImagesAsUrl(imagesAsUrlTemp);
-        //   // console.log(downloadURL)
-        // });
+        console.log('imagesAsUrlTemp', imagesAsUrlTemp);
       }
     );
   }
