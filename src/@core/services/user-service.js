@@ -16,5 +16,8 @@ export default axios => resource => ({
       }
     }
     return axios.get(`${resource}/paginate-participant`, payload)
+  },
+  getUsersByIdEvent(idEvent) {
+    return axios.get(`${resource}/get-users-by-id-event?idEvent=${idEvent}`)
   }
 })

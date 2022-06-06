@@ -26,3 +26,8 @@ code:not([class*='language-']):after {
 code[class*='language-'] {
   padding: 0;
 }
+
+
+.swal2-container {
+  z-index: 20000 !important;
+}

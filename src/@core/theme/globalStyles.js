@@ -36,7 +36,7 @@ const GlobalStyles = theme => {
         position: 'fixed',
         backgroundColor: theme.palette.primary.main
       }
-    }
+    },
   }
 }
 

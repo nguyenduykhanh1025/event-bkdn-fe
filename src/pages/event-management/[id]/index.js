@@ -226,66 +226,6 @@ const EventManagementDetail = props => {
                 <Grid item xs={12}>
                   <Divider />
                 </Grid>
-                <Grid item xs={12}>
-                  <span className='mr-2'>Yêu cầu thêm</span>
-                  <Grid container spacing={2}>
-                    <div className='w-11/12 m-auto pt-5'>
-                      <Grid item xs={12}>
-                        <div className='font-bold'>Điểm trung bình rèn luyện</div>
-                        <div className='ml-5'>
-                          <TextField id='standard-basic' label='Input' variant='standard' />
-                        </div>
-                      </Grid>
-                    </div>
-                    <div className='w-11/12 m-auto pt-5'>
-                      <Grid item xs={12}>
-                        <div className='font-bold'>Radios</div>
-                        <div className='ml-5'>
-                          <FormControl>
-                            <RadioGroup
-                              aria-labelledby='demo-radio-buttons-group-label'
-                              defaultValue='female'
-                              name='radio-buttons-group'
-                            >
-                              <FormControlLabel value='female' control={<Radio />} label='Female' />
-                              <FormControlLabel value='male' control={<Radio />} label='Male' />
-                              <FormControlLabel value='other' control={<Radio />} label='Other' />
-                            </RadioGroup>
-                          </FormControl>
-                        </div>
-                      </Grid>
-                    </div>
-                    <div className='w-11/12 m-auto pt-5'>
-                      <Grid item xs={12}>
-                        <div className='font-bold'>Selections</div>
-                        <div className='ml-5'>
-                          <FormControlLabel
-                            label='Check 1 asdasdas das dasd asd asdas sadas das dasd adas d'
-                            control={<Checkbox />}
-                          />
-                          <FormControlLabel label='Parent 2' control={<Checkbox />} />
-                          <FormControlLabel label='Parent 3' control={<Checkbox />} />
-                        </div>
-                      </Grid>
-                    </div>
-                    <div className='w-11/12 m-auto pt-5'>
-                      <Grid item xs={12}>
-                        <div className='font-bold'>Textarea</div>
-                        <div className='ml-5'>
-                          <TextField fullWidth multiline minRows={3} label='Message'></TextField>
-                        </div>
-                      </Grid>
-                    </div>
-                    <div className='w-11/12 m-auto pt-5'>
-                      <Grid item xs={12}>
-                        <div className='font-bold'>File upload</div>
-                        <div className='ml-5'>
-                          <FileIcon /> File something!!!
-                        </div>
-                      </Grid>
-                    </div>
-                  </Grid>
-                </Grid>
               </Grid>
             </CardContent>
           </Card>
@@ -320,6 +260,7 @@ const EventManagementDetail = props => {
           keepMounted
           onClose={handleClose}
           aria-describedby='alert-dialog-slide-description'
+          maxWidth="xl"
         >
           <ParticipantsEventDialog handleClose={handleClose} />
         </Dialog>

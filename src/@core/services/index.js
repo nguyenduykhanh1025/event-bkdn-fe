@@ -14,5 +14,6 @@ const eventUserService = EventUserService(axiosClient)('/event-users')
 const adminEventService = EventService(axiosClient)('/admin/events')
 const adminJournalService = JournalService(axiosClient)('/admin/journals')
 const adminUserService = UserService(axiosClient)('/admin/users')
+const adminEventUserService = EventUserService(axiosClient)('/admin/event-users')
 
-export { authService, eventService, adminEventService, adminJournalService, adminUserService, eventUserService}
+export { authService, eventService, adminEventService, adminJournalService, adminUserService, eventUserService, adminEventUserService}
