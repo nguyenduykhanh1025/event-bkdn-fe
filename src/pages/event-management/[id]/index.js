@@ -121,7 +121,7 @@ const EventManagementDetail = props => {
                         Xem Thành Viên
                       </Button>
                     </span>
-                    <span className='ml-2'>
+                    {/* <span className='ml-2'>
                       <Button
                         variant='contained'
                         size='small'
@@ -132,7 +132,7 @@ const EventManagementDetail = props => {
                       >
                         Mời Thành Viên
                       </Button>
-                    </span>
+                    </span> */}
                     <span className='ml-2'>
                       <Button
                         variant='contained'

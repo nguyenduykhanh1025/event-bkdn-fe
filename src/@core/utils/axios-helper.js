@@ -4,7 +4,7 @@ import localStorageHelper from './local-storage'
 import Router from 'next/router'
 
 const axiosClient = axios.create({
-  baseURL: 'http://localhost:8083/api',
+  baseURL: 'http://localhost:8080/api',
   headers: {
     'content-type': 'application/json'
   }
