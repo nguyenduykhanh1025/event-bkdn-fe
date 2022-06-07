@@ -35,7 +35,6 @@ const TabIncomingEvents = () => {
   const router = useRouter()
 
   useEffect(async () => {
-    console.log('sssssssssssssss')
     await getEventsIncomingFromAPI({
       ...PARAMS_PAGINATE_DEFAULT
     })
