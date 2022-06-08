@@ -262,7 +262,7 @@ const EventManagementDetail = props => {
           aria-describedby='alert-dialog-slide-description'
           maxWidth="xl"
         >
-          <ParticipantsEventDialog handleClose={handleClose} />
+          <ParticipantsEventDialog handleClose={handleClose} open={open} eventId={eventId}/>
         </Dialog>
         <CreateEventDialog
           open={isOpenCreateEventDialog}

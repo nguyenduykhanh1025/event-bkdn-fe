@@ -31,18 +31,18 @@ const rows = [
 ];
 
 const userApplyToEventDialog = props => {
-  const { handleClose } = props
+  const { handleClose, eventId} = props
   const [users, setUsers] = useState([])
   const [idSeletedCurrent, setIdSelectedCurrent] = useState(null);
   const [isNeedReloadTable, setIsNeedReloadTable] = useState(false);
 
   useEffect(() => {
     getUsersByIdEventFromAPI()
-  }, [isNeedReloadTable])
+  }, [isNeedReloadTable, eventId])
 
   const getUsersByIdEventFromAPI = async () => {
     try {
-      const res = await adminUserService.getUsersByIdEvent(101)
+      const res = await adminUserService.getUsersByIdEvent(eventId)
       setUsers(res.data.data)
     } catch (err) { console.log(err) }
     finally {
