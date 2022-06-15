@@ -16,7 +16,11 @@ import moment from 'moment'
 import { storage } from 'src/@core/utils/firebase'
 import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
 import { async } from '@firebase/util'
+import { Formik, ErrorMessage } from 'formik';
+import * as Yup from "yup";
 // import Dropzone from 'react-dropzone'
+
+
 
 const CreateEventDialog = props => {
   const { open, handleClose, onNeedReloadTable, data } = props
@@ -57,21 +61,14 @@ const CreateEventDialog = props => {
     setValue(newValue)
   }
 
-  const handleCreate = async () => {
+  const handleCreate = async (values) => {
     // TODO: upload anh chua xong, dang dich promise gi do
     overlayLoading.start()
 
     // await updateImagesToFirebase()
     console.log('imagesAsUrl', imagesAsUrl);
     const payload = {
-      title: title,
-      description: description,
-      description_participant: descriptionParticipant,
-      description_required: descriptionRequired,
-      count_need_participate: 10,
-      start_at: startDate,
-      end_at: endDate,
-      address: address,
+      ...values,
       images_str: imagesAsUrl.join(',')
     }
 
@@ -92,27 +89,33 @@ const CreateEventDialog = props => {
 
   const handleImageAsFile1 = (e) => {
     const image = e.target.files[0]
-    // let imageAsFilesTemp = [...imageAsFiles]
-    // imageAsFilesTemp[0] = image
-    // setImageAsFiles(imageAsFilesTemp)
     handleFireBaseUpload(image)
   }
 
   const handleImageAsFile2 = (e) => {
     const image = e.target.files[0]
-    // let imageAsFilesTemp = [...imageAsFiles]
-    // imageAsFilesTemp[1] = image
-    // setImageAsFiles(imageAsFilesTemp)
     handleFireBaseUpload(image)
   }
 
   const handleImageAsFile3 = (e) => {
     const image = e.target.files[0]
-    // let imageAsFilesTemp = [...imageAsFiles]
-    // imageAsFilesTemp[2] = image
-    // setImageAsFiles(imageAsFilesTemp)
     handleFireBaseUpload(image)
   }
+
+  const SignupSchema = Yup.object().shape({
+    title: Yup.string()
+      .required('Trường này là yêu cầu nhập'),
+    description: Yup.string()
+      .required('Trường này là yêu cầu nhập'),
+    count_need_participate: Yup.string()
+      .required('Trường này là yêu cầu nhập'),
+    start_at: Yup.string()
+      .required('Trường này là yêu cầu nhập'),
+    end_at: Yup.string()
+      .required('Trường này là yêu cầu nhập'),
+    address: Yup.string()
+      .required('Trường này là yêu cầu nhập'),
+  });
 
   const handleFireBaseUpload = async (file) => {
     const storageRef = ref(storage, `files/${file.name}`);
@@ -133,7 +136,6 @@ const CreateEventDialog = props => {
         const imagesAsUrlTemp = [...imagesAsUrl]
         imagesAsUrlTemp.push(downloadURL)
         setImagesAsUrl(imagesAsUrlTemp);
-        console.log('imagesAsUrlTemp', imagesAsUrlTemp);
       }
     );
   }
@@ -141,141 +143,184 @@ const CreateEventDialog = props => {
   return (
     <Dialog open={open} onClose={handleClose} maxWidth='lg' fullWidth={true}>
       <DialogTitle>TẠO SỰ KIỆN MỚI</DialogTitle>
-      <DialogContent>
-        <FormTitle title='Tiêu đề:' />
-        <TextField
-          autoFocus
-          margin='dense'
-          id='name'
-          type='email'
-          fullWidth
-          variant='outlined'
-          value={title}
-          onChange={e => {
-            setTitle(e.target.value)
-          }}
-        />
-        <FormTitle title='Nội dung:' />
-        <TextField
-          autoFocus
-          margin='dense'
-          id='name'
-          type='email'
-          fullWidth
-          variant='outlined'
-          multiline
-          rows={4}
-          value={description}
-          onChange={e => {
-            setDescription(e.target.value)
-          }}
-        />
-        <FormTitle title='Địa điểm:' />
-        <TextField
-          autoFocus
-          margin='dense'
-          id='name'
-          type='email'
-          fullWidth
-          variant='outlined'
-          value={address}
-          onChange={e => {
-            setAddress(e.target.value)
-          }}
-        />
-        <FormTitle title='Đối tượng tham gia:' />
-        <TextField
-          autoFocus
-          margin='dense'
-          id='name'
-          type='email'
-          fullWidth
-          variant='outlined'
-          value={descriptionParticipant}
-          onChange={e => {
-            setDescriptionParticipant(e.target.value)
-          }}
-        />
-        <FormTitle title='Yêu cầu:' />
-        <TextField
-          autoFocus
-          margin='dense'
-          id='name'
-          type='email'
-          fullWidth
-          variant='outlined'
-          multiline
-          rows={4}
-          value={descriptionRequired}
-          onChange={e => {
-            setDescriptionRequired(e.target.value)
-          }}
-        />
-        <FormTitle title='Số lượng tham gia:' />
-        <TextField
-          autoFocus
-          margin='dense'
-          id='name'
-          type='number'
-          fullWidth
-          variant='outlined'
-          value={countNeedParticipate}
-          onChange={e => {
-            setCountNeedParticipate(e.target.value)
-          }}
-        />
-        <Grid container spacing={3}>
-          <Grid item xs={3}>
-            <FormTitle title='Thời gian bắt đầu:' />
-            <TextField
-              id='date'
-              type='date'
-              sx={{ width: '100%' }}
-              InputLabelProps={{
-                shrink: true
-              }}
-              value={startDate}
-              onChange={e => {
-                setStartDate(e.target.value)
-              }}
-            />
-          </Grid>
-          <Grid item xs={3}>
-            <FormTitle title='Thời gian kết thúc:' />
-            <TextField
-              id='date'
-              type='date'
-              sx={{ width: '100%' }}
-              InputLabelProps={{
-                shrink: true
-              }}
-              value={endDate}
-              onChange={e => {
-                setEndDate(e.target.value)
-              }}
-            />
-          </Grid>
-        </Grid>
-        <FormTitle title='Tải ảnh 1:' />
-        <TextField
-          type="file"
-          onChange={handleImageAsFile1}
-        />
-        <FormTitle title='Tải ảnh 2:' />
-        <TextField
-          type="file"
-          onChange={handleImageAsFile2}
-        />
-        <FormTitle title='Tải ảnh 3:' />
-        <TextField
-          type="file"
-          onChange={handleImageAsFile3}
-        />
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={handleClose}>Thoát</Button>
-        <Button onClick={handleCreate}>{data ? 'Sửa' : 'Tạo'}</Button>
-      </DialogActions>
+      <Formik
+        initialValues={{
+          title: '',
+          description: '',
+          count_need_participate: '',
+          start_at: '',
+          end_at: '',
+          address: '',
+        }}
+        validationSchema={SignupSchema}
+        onSubmit={values => {
+          handleCreate(values)
+        }}
+      >
+        {({
+          values,
+          errors,
+          touched,
+          handleChange,
+          handleBlur,
+          handleSubmit,
+          isSubmitting,
+          /* and other goodies */
+        }) => (
+          <>
+            <DialogContent>
+              <FormTitle title='Tiêu đề:' />
+              <TextField
+                margin='dense'
+                id='name'
+                name="title"
+                type='email'
+                fullWidth
+                variant='outlined'
+                onChange={handleChange}
+                onBlur={handleBlur}
+                value={values.title}
+              />
+              <p className='text-red-500'>
+                <ErrorMessage name="title" />
+              </p>
+              <FormTitle title='Nội dung:' />
+              <TextField
+                margin='dense'
+                id='name'
+                name="description"
+                fullWidth
+                variant='outlined'
+                multiline
+                rows={4}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                value={values.description}
+              />
+              <p className='text-red-500'>
+                <ErrorMessage name="description" />
+              </p>
+
+              <FormTitle title='Địa điểm:' />
+              <TextField
+                margin='dense'
+                id='name'
+                name="address"
+                fullWidth
+                variant='outlined'
+                onChange={handleChange}
+                onBlur={handleBlur}
+                value={values.address}
+              />
+              <p className='text-red-500'>
+                <ErrorMessage name="address" />
+              </p>
+
+              <FormTitle title='Đối tượng tham gia:' />
+              <TextField
+                margin='dense'
+                id='name'
+                name="description_participant"
+                fullWidth
+                variant='outlined'
+                onChange={handleChange}
+                onBlur={handleBlur}
+                value={values.description_participant}
+              />
+
+              <FormTitle title='Yêu cầu:' />
+              <TextField
+                margin='dense'
+                id='name'
+                name="description_required"
+                fullWidth
+                variant='outlined'
+                multiline
+                rows={4}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                value={values.description_required}
+              />
+
+              <FormTitle title='Số lượng tham gia:' />
+              <TextField
+                margin='dense'
+                id='name'
+                name="count_need_participate"
+                type='number'
+                fullWidth
+                variant='outlined'
+                onChange={handleChange}
+                onBlur={handleBlur}
+                value={values.count_need_participate}
+              />
+              <p className='text-red-500'>
+                <ErrorMessage name="count_need_participate" />
+              </p>
+
+              <Grid container spacing={3}>
+                <Grid item xs={3}>
+                  <FormTitle title='Thời gian bắt đầu:' />
+                  <TextField
+                    id='date'
+                    type='date'
+                    name="start_at"
+                    sx={{ width: '100%' }}
+                    InputLabelProps={{
+                      shrink: true
+                    }}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.start_at}
+                  />
+                  <p className='text-red-500'>
+                    <ErrorMessage name="start_at" />
+                  </p>
+                </Grid>
+                <Grid item xs={3}>
+                  <FormTitle title='Thời gian kết thúc:' />
+                  <TextField
+                    id='date'
+                    type='date'
+                    name="end_at"
+                    sx={{ width: '100%' }}
+                    InputLabelProps={{
+                      shrink: true
+                    }}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.end_at}
+                  />
+                  <p className='text-red-500'>
+                    <ErrorMessage name="end_at" />
+                  </p>
+                </Grid>
+              </Grid>
+              <FormTitle title='Tải ảnh 1:' />
+              <TextField
+                type="file"
+                onChange={handleImageAsFile1}
+              />
+              <FormTitle title='Tải ảnh 2:' />
+              <TextField
+                type="file"
+                onChange={handleImageAsFile2}
+              />
+              <FormTitle title='Tải ảnh 3:' />
+              <TextField
+                type="file"
+                onChange={handleImageAsFile3}
+              />
+
+
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleClose}>Thoát</Button>
+              <Button onClick={handleSubmit}>{data ? 'Sửa' : 'Tạo'}</Button>
+            </DialogActions>
+          </>
+        )}
+      </Formik>
     </Dialog>
   )
 }

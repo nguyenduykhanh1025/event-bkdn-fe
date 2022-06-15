@@ -50,11 +50,11 @@ const eventManagementDetail = props => {
               <Grid container spacing={2}>
                 <Grid item xs={12}>
                   <div className='float-right mb-5'>
-                    <span className='ml-2'>
+                    {/* <span className='ml-2'>
                       <Button variant='contained' size='small' color='info' startIcon={<EyeIcon />}>
                         Xem Sự Kiện Đã Tham Gia
                       </Button>
-                    </span>
+                    </span> */}
                     <span className='ml-2'>
                       <Button
                         variant='contained'

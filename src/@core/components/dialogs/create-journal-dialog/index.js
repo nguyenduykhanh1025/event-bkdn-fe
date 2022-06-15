@@ -13,12 +13,15 @@ import Grid from '@mui/material/Grid'
 import { adminEventService, adminJournalService, eventService } from 'src/@core/services'
 import overlayLoading from 'src/@core/utils/overlay-loading'
 // import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker'
+import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
+import { storage } from 'src/@core/utils/firebase'
 
 const CreateJournalDialog = props => {
   const { open, handleClose, onNeedReloadTable, data } = props
 
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
+  const [imagesAsUrl, setImagesAsUrl] = useState([])
 
   useEffect(() => {
     setTitle(data ? data.title : '')
@@ -33,7 +36,7 @@ const CreateJournalDialog = props => {
     const payload = {
       title: title,
       description: description,
-      images_str: 'OKE'
+      images_str: imagesAsUrl.join(',')
     }
 
     try {
@@ -46,6 +49,34 @@ const CreateJournalDialog = props => {
     } finally {
       overlayLoading.stop()
     }
+  }
+
+  const handleImageAsFile = (e) => {
+    const image = e.target.files[0]
+    handleFireBaseUpload(image)
+  }
+
+  const handleFireBaseUpload = async (file) => {
+    const storageRef = ref(storage, `files/${file.name}`);
+    const uploadTask = uploadBytesResumable(storageRef, file);
+
+    uploadTask.on("state_changed",
+      (snapshot) => {
+        const progress =
+          Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+        console.log('progress', progress);
+      },
+      (error) => {
+        alert(error);
+      },
+      async () => {
+        const downloadURL = await getDownloadURL(uploadTask.snapshot.ref)
+        console.log('downloadURL', downloadURL);
+        const imagesAsUrlTemp = [...imagesAsUrl]
+        imagesAsUrlTemp.push(downloadURL)
+        setImagesAsUrl(imagesAsUrlTemp);
+      }
+    );
   }
 
   return (
@@ -79,6 +110,12 @@ const CreateJournalDialog = props => {
           onChange={e => {
             setDescription(e.target.value)
           }}
+        />
+
+        <FormTitle title='Tải ảnh:' />
+        <TextField
+          type="file"
+          onChange={handleImageAsFile}
         />
       </DialogContent>
       <DialogActions>
