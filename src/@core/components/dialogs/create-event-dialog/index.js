@@ -151,6 +151,7 @@ const CreateEventDialog = props => {
           start_at: '',
           end_at: '',
           address: '',
+          point_number: ''
         }}
         validationSchema={SignupSchema}
         onSubmit={values => {
@@ -257,6 +258,19 @@ const CreateEventDialog = props => {
               <p className='text-red-500'>
                 <ErrorMessage name="count_need_participate" />
               </p>
+
+              <FormTitle title='Số điểm đạt được:' />
+              <TextField
+                margin='dense'
+                id='name'
+                name="point_number"
+                type='number'
+                fullWidth
+                variant='outlined'
+                onChange={handleChange}
+                onBlur={handleBlur}
+                value={values.point_number}
+              />
 
               <Grid container spacing={3}>
                 <Grid item xs={3}>

@@ -15,7 +15,7 @@ import QRCode from "react-qr-code";
 
 const CreateJournalDialog = props => {
   const { open, handleClose, eventId } = props
-  const [urlJoinEvent, setUrlJoinEvent] = useState(`http://192.168.1.3:3000/join-to-event/${eventId}`)
+  const [urlJoinEvent, setUrlJoinEvent] = useState(`http://192.168.222.195:3000/join-to-event/${eventId}`)
   // useEffect(() => {
   //   ReactDOM.render(<QRCode value="hey" />, document.getElementById("qr-code"));
   // }, [])
