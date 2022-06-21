@@ -46,5 +46,8 @@ export default axios => resource => ({
       }
     }
     return axios.get(`${resource}/paginate-event-over`, payload)
+  },
+  getEventsJoinByIdUser(idUser) {
+    return axios.get(`${resource}/get-events-join-by-id-user?id_user=${idUser}`)
   }
 })

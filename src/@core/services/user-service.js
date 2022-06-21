@@ -19,5 +19,8 @@ export default axios => resource => ({
   },
   getUsersByIdEvent(idEvent) {
     return axios.get(`${resource}/get-users-by-id-event?idEvent=${idEvent}`)
+  },
+  getById(id) {
+    return axios.get(`${resource}/get-user-by-id?id=${id}`)
   }
 })

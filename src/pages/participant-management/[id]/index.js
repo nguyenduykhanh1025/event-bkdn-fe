@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import TitleHeaderPage from 'src/@core/components/title-header-page'
 import Card from '@mui/material/Card'
@@ -14,13 +14,40 @@ import DeleteIcon from 'mdi-material-ui/Delete'
 import AlertCircleIcon from 'mdi-material-ui/AlertCircle'
 import Slide from '@mui/material/Slide'
 import ParticipantsEventDialog from 'src/@core/components/dialogs/participants-event-dialog'
+import ParticipantsJoinedDialog from 'src/@core/components/dialogs/participants-joined-dialog'
+
 import { showConfirm } from 'src/@core/utils/alert-notify-helper'
+import { Dialog } from '@mui/material'
+import { adminUserService } from 'src/@core/services'
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction='up' ref={ref} {...props} />
 })
 
 const eventManagementDetail = props => {
+
+  const [isOpenEventJoined, setIsOpenEventJoined] = useState(false)
+  const [idUser, setIdUser] = useState(
+    typeof window !== 'undefined'
+      ? window.location.href.split('/')[window.location.href.split('/').length - 2]
+      : null
+  )
+  const [userDetai, setUserDetail] = useState({})
+
+  useEffect(async () => {
+    await getUserByID()
+  }, [])
+
+
+  const getUserByID = async () => {
+    try {
+      const res = await adminUserService.getById(idUser);
+      setUserDetail(res.data.data)
+    } catch (err) {
+    } finally {
+    }
+  }
+
   const onCLickDeleteUser = () => {
     showConfirm(
       'Bạn muốn xóa trường này',
@@ -39,6 +66,14 @@ const eventManagementDetail = props => {
     )
   }
 
+  const handleCloseDialogEventJoined = () => {
+    setIsOpenEventJoined(false);
+  }
+
+  const handleClickOpen = () => {
+    setIsOpenEventJoined(true)
+  }
+
   return (
     <>
       <TitleHeaderPage title='Thông Tin Chi Tiết' />
@@ -50,11 +85,11 @@ const eventManagementDetail = props => {
               <Grid container spacing={2}>
                 <Grid item xs={12}>
                   <div className='float-right mb-5'>
-                    {/* <span className='ml-2'>
-                      <Button variant='contained' size='small' color='info' startIcon={<EyeIcon />}>
+                    <span className='ml-2'>
+                      <Button onClick={handleClickOpen} variant='contained' size='small' color='info' startIcon={<EyeIcon />}>
                         Xem Sự Kiện Đã Tham Gia
                       </Button>
-                    </span> */}
+                    </span>
                     <span className='ml-2'>
                       <Button
                         variant='contained'
@@ -126,6 +161,17 @@ const eventManagementDetail = props => {
           </Grid>
         </Grid>
       </Grid>
+
+      <Dialog
+        open={isOpenEventJoined}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={handleCloseDialogEventJoined}
+        aria-describedby='alert-dialog-slide-description'
+        maxWidth="xl"
+      >
+        <ParticipantsJoinedDialog handleClose={handleCloseDialogEventJoined} open={isOpenEventJoined} userId={userDetai.id} />
+      </Dialog>
     </>
   )
 }

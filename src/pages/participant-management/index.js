@@ -65,8 +65,8 @@ const AccountSettings = () => {
     await getJournalsFromAPI({})
   }, [])
 
-  const onClickGoToDetail = () => {
-    router.push('/participant-management/12')
+  const onClickGoToDetail = (id) => {
+    router.push(`/participant-management/${id}`)
   }
 
   const getJournalsFromAPI = async params => {
@@ -124,7 +124,7 @@ const AccountSettings = () => {
                           </div>
                         </TableCell>
                         <TableCell align='left'>{`${row.last_name} ${row.first_name}`}</TableCell>
-                        <TableCell align='center'>{row.mssv}</TableCell>
+                        <TableCell align='center'>{row.id_student}</TableCell>
                         <TableCell align='left'>{row.email}</TableCell>
                         <TableCell align='center'>{row.phone_number}</TableCell>
                         <TableCell align='center'>{row.birth_date}</TableCell>
@@ -134,7 +134,7 @@ const AccountSettings = () => {
                               variant='outlined'
                               size='small'
                               endIcon={<ArrowRightThinIcon />}
-                              onClick={onClickGoToDetail}
+                              onClick={() => onClickGoToDetail(row.id)}
                             >
                               Chi Tiết
                             </Button>
