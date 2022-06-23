@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -20,6 +20,11 @@ import Button from '@mui/material/Button'
 
 // ** Icons Imports
 import Close from 'mdi-material-ui/Close'
+import { getIdUserFromJWT } from 'src/@core/utils/jwt-helper'
+import { adminUserService } from 'src/@core/services'
+import { async } from '@firebase/util'
+import overlayLoading from 'src/@core/utils/overlay-loading'
+import { showAlertSuccess } from 'src/@core/utils/alert-notify-helper'
 
 const ImgStyled = styled('img')(({ theme }) => ({
   width: 120,
@@ -49,6 +54,24 @@ const TabAccount = () => {
   // ** State
   const [openAlert, setOpenAlert] = useState(true)
   const [imgSrc, setImgSrc] = useState('/images/avatars/1.png')
+  const [user, setUser] = useState({})
+
+  useEffect(() => {
+    console.log(getIdUserFromJWT())
+    getUserInformationFromAPI()
+  }, [])
+
+  const getUserInformationFromAPI = async () => {
+    try {
+      overlayLoading.start()
+      const res = await adminUserService.getById(getIdUserFromJWT())
+      setUser(res.data.data)
+    } catch (err) {
+      console.log(err)
+    } finally {
+      overlayLoading.stop()
+    }
+  }
 
   const onChange = file => {
     const reader = new FileReader()
@@ -56,6 +79,23 @@ const TabAccount = () => {
     if (files && files.length !== 0) {
       reader.onload = () => setImgSrc(reader.result)
       reader.readAsDataURL(files[0])
+    }
+  }
+
+  const onClickSave = async () => {
+    const payload = {
+      last_name: user.last_name,
+      first_name: user.first_name
+    }
+
+    try {
+      overlayLoading.start()
+      await adminUserService.update(user.id, payload)
+      showAlertSuccess('Lưu thành công!')
+    } catch (err) {
+      console.log(err)
+    } finally {
+      overlayLoading.stop()
     }
   }
 
@@ -67,8 +107,12 @@ const TabAccount = () => {
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
               <ImgStyled src={imgSrc} alt='Profile Pic' />
               <Box>
-                <ButtonStyled component='label' variant='contained' htmlFor='account-settings-upload-image'>
-                  Upload New Photo
+                <ButtonStyled
+                  component='label'
+                  variant='contained'
+                  htmlFor='account-settings-upload-image'
+                >
+                  Tải Lên
                   <input
                     hidden
                     type='file'
@@ -77,9 +121,9 @@ const TabAccount = () => {
                     id='account-settings-upload-image'
                   />
                 </ButtonStyled>
-                <ResetButtonStyled color='error' variant='outlined' onClick={() => setImgSrc('/images/avatars/1.png')}>
+                {/* <ResetButtonStyled color='error' variant='outlined' onClick={() => setImgSrc('/images/avatars/1.png')}>
                   Reset
-                </ResetButtonStyled>
+                </ResetButtonStyled> */}
                 <Typography variant='body2' sx={{ marginTop: 5 }}>
                   Allowed PNG or JPEG. Max size of 800K.
                 </Typography>
@@ -88,22 +132,44 @@ const TabAccount = () => {
           </Grid>
 
           <Grid item xs={12} sm={6}>
-            <TextField fullWidth label='Username' placeholder='johnDoe' defaultValue='johnDoe' />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField fullWidth label='Name' placeholder='John Doe' defaultValue='John Doe' />
+            <TextField
+              fullWidth
+              // label='Họ'
+              placeholder='Họ'
+              defaultValue={user.first_name}
+              value={user.first_name}
+              onChange={e => {
+                setUser({ ...user, first_name: e.target.value })
+              }}
+            />
           </Grid>
           <Grid item xs={12} sm={6}>
             <TextField
               fullWidth
-              type='email'
-              label='Email'
-              placeholder='johnDoe@example.com'
-              defaultValue='johnDoe@example.com'
+              // label='Tên'
+              placeholder='Tên'
+              defaultValue={user.last_name}
+              value={user.last_name}
+              onChange={e => {
+                setUser({ ...user, last_name: e.target.value })
+              }}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
-            <FormControl fullWidth>
+            <TextField
+              disabled
+              fullWidth
+              type='email'
+              // label='Email'
+              placeholder='johnDoe@example.com'
+              value={user.email}
+              onChange={e => {
+                setUser({ ...user, email: e.target.value })
+              }}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <FormControl fullWidth disabled>
               <InputLabel>Role</InputLabel>
               <Select label='Role' defaultValue='admin'>
                 <MenuItem value='admin'>Admin</MenuItem>
@@ -114,7 +180,7 @@ const TabAccount = () => {
               </Select>
             </FormControl>
           </Grid>
-          <Grid item xs={12} sm={6}>
+          {/* <Grid item xs={12} sm={6}>
             <FormControl fullWidth>
               <InputLabel>Status</InputLabel>
               <Select label='Status' defaultValue='active'>
@@ -126,9 +192,9 @@ const TabAccount = () => {
           </Grid>
           <Grid item xs={12} sm={6}>
             <TextField fullWidth label='Company' placeholder='ABC Pvt. Ltd.' defaultValue='ABC Pvt. Ltd.' />
-          </Grid>
+          </Grid> */}
 
-          {openAlert ? (
+          {/* {openAlert ? (
             <Grid item xs={12} sx={{ mb: 3 }}>
               <Alert
                 severity='warning'
@@ -145,15 +211,15 @@ const TabAccount = () => {
                 </Link>
               </Alert>
             </Grid>
-          ) : null}
+          ) : null} */}
 
           <Grid item xs={12}>
-            <Button variant='contained' sx={{ marginRight: 3.5 }}>
-              Save Changes
+            <Button variant='contained' sx={{ marginRight: 3.5 }} onClick={onClickSave}>
+              Lưu Thay Đổi
             </Button>
-            <Button type='reset' variant='outlined' color='secondary'>
+            {/* <Button type='reset' variant='outlined' color='secondary'>
               Reset
-            </Button>
+            </Button> */}
           </Grid>
         </Grid>
       </form>
