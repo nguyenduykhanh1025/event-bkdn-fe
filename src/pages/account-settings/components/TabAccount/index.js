@@ -57,7 +57,6 @@ const TabAccount = () => {
   const [user, setUser] = useState({})
 
   useEffect(() => {
-    console.log(getIdUserFromJWT())
     getUserInformationFromAPI()
   }, [])
 

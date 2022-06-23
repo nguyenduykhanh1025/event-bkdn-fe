@@ -49,5 +49,8 @@ export default axios => resource => ({
   },
   getEventsJoinByIdUser(idUser) {
     return axios.get(`${resource}/get-events-join-by-id-user?id_user=${idUser}`)
+  },
+  update(payload) {
+    return axios.put(`${resource}`, payload)
   }
 })

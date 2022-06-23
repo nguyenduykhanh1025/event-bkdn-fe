@@ -20,6 +20,10 @@ import EyeOutline from 'mdi-material-ui/EyeOutline'
 import KeyOutline from 'mdi-material-ui/KeyOutline'
 import EyeOffOutline from 'mdi-material-ui/EyeOffOutline'
 import LockOpenOutline from 'mdi-material-ui/LockOpenOutline'
+import { getIdUserFromJWT } from 'src/@core/utils/jwt-helper'
+import { adminUserService } from 'src/@core/services'
+import overlayLoading from 'src/@core/utils/overlay-loading'
+import { showAlertError, showAlertSuccess } from 'src/@core/utils/alert-notify-helper'
 
 const TabSecurity = () => {
   // ** States
@@ -71,8 +75,24 @@ const TabSecurity = () => {
     event.preventDefault()
   }
 
-  const onClickSave = () => {
-    console.log(values)
+  const onClickSave = async () => {
+    const payload = {
+      id: getIdUserFromJWT(),
+      current_password: values.currentPassword,
+      new_password: values.newPassword
+    }
+    try {
+      overlayLoading.start()
+      const res = await adminUserService.updatePassowrd(payload)
+      showAlertSuccess('Lưu thành công!')
+    } catch (err) {
+      console.log(err);
+      if (err.response.data.message === "current_pass_not_match") {
+        showAlertError("Mật khẩu hiện tại không hợp lệ!")
+      }
+    } finally {
+      overlayLoading.stop()
+    }
   }
 
   return (

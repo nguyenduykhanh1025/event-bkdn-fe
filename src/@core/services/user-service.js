@@ -22,5 +22,8 @@ export default axios => resource => ({
   },
   getById(id) {
     return axios.get(`${resource}/get-user-by-id?id=${id}`)
+  },
+  updatePassowrd(payload) {
+    return axios.put(`${resource}/update-password`, payload)
   }
 })

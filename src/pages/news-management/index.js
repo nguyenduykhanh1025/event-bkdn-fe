@@ -86,8 +86,8 @@ const AccountSettings = () => {
                   <TableHead>
                     <TableRow>
                       <TableCell align='center'>ID</TableCell>
-                      <TableCell align='left'>Tiêu Đề</TableCell>
-                      <TableCell align='center'>Nội Dung</TableCell>
+                      <TableCell align='left' width="300px">Tiêu Đề</TableCell>
+                      <TableCell align='center' width="500px">Nội Dung</TableCell>
                       <TableCell align='center'>Ngày Đăng</TableCell>
                       <TableCell align='center'>Số Lượt Xem</TableCell>
                       <TableCell align='center'>Actions</TableCell>
@@ -103,7 +103,7 @@ const AccountSettings = () => {
                           {row.id}
                         </TableCell>
                         <TableCell align='left'>{row.title}</TableCell>
-                        <TableCell align='center'>{row.description}</TableCell>
+                        <TableCell align='left'>{row.description?.slice(0, 120)}...</TableCell>
                         <TableCell align='center'>{row.posted_at}</TableCell>
                         <TableCell align='center'>
                           <Chip icon={<EyeIcon />} label={row.count_view ? row.count_view : 0} />

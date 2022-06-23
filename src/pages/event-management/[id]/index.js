@@ -98,7 +98,7 @@ const EventManagementDetail = props => {
       }
     )
   }
-  console.log('eventDetail', new Date(eventDetail.end_at) > new Date())
+
   return (
     <>
       <TitleHeaderPage title='Sự Kiện Chi Tiết' />
@@ -262,13 +262,14 @@ const EventManagementDetail = props => {
           aria-describedby='alert-dialog-slide-description'
           maxWidth="xl"
         >
-          <ParticipantsEventDialog handleClose={handleClose} open={open} eventId={eventId}/>
+          <ParticipantsEventDialog handleClose={handleClose} open={open} eventId={eventId} />
         </Dialog>
         <CreateEventDialog
           open={isOpenCreateEventDialog}
           handleClose={() => setIsOpenCreateEventDialog(false)}
-          onNeedReloadTable={() => {
+          onNeedReloadTable={async () => {
             setIsOpenCreateEventDialog(false)
+            await getEventByID()
           }}
           data={eventDetail}
         />

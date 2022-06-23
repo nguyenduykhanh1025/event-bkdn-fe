@@ -31,6 +31,7 @@ const CreateEventDialog = props => {
   const [descriptionParticipant, setDescriptionParticipant] = useState('')
   const [descriptionRequired, setDescriptionRequired] = useState('')
   const [countNeedParticipate, setCountNeedParticipate] = useState('')
+  const [pointNumber, setPointNumber] = useState('')
 
   const [startDate, setStartDate] = useState(null)
   const [endDate, setEndDate] = useState(null)
@@ -55,6 +56,7 @@ const CreateEventDialog = props => {
         ? moment(new Date(data.end_at)).format('YYYY-MM-DD')
         : moment(new Date()).format('YYYY-MM-DD')
     )
+    setPointNumber(data ? data.point_number : '')
   }, [data])
 
   const handleChange = newValue => {
@@ -73,7 +75,10 @@ const CreateEventDialog = props => {
     }
 
     try {
-      const res = await adminEventService.create(payload)
+      const res = data ? await adminEventService.update({
+        ...payload,
+        id: data.id
+      }) : await adminEventService.create(payload)
       onNeedReloadTable()
     } catch (err) {
     } finally {
@@ -142,16 +147,18 @@ const CreateEventDialog = props => {
 
   return (
     <Dialog open={open} onClose={handleClose} maxWidth='lg' fullWidth={true}>
-      <DialogTitle>TẠO SỰ KIỆN MỚI</DialogTitle>
+      <DialogTitle>{data ? 'SỬA SỰ KIỆN' : 'TẠO SỰ KIỆN MỚI'}</DialogTitle>
       <Formik
         initialValues={{
-          title: '',
-          description: '',
-          count_need_participate: '',
-          start_at: '',
-          end_at: '',
-          address: '',
-          point_number: ''
+          title: title,
+          description: description,
+          count_need_participate: countNeedParticipate,
+          start_at: startDate,
+          end_at: endDate,
+          address: address,
+          point_number: pointNumber,
+          description_participant: descriptionParticipant,
+          description_required: descriptionRequired
         }}
         validationSchema={SignupSchema}
         onSubmit={values => {
