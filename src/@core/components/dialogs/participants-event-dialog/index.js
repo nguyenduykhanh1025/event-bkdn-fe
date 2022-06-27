@@ -72,6 +72,7 @@ const userApplyToEventDialog = props => {
   }
 
   const acceptedUserJoinToEvent = async () => {
+    console.log(idSeletedCurrent);
     try {
       overlayLoading.start()
       const payload = {
