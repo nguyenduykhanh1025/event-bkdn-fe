@@ -20,6 +20,8 @@ import { Formik, ErrorMessage } from 'formik'
 import * as Yup from 'yup'
 import LinearProgress from '@mui/material/LinearProgress'
 import Box from '@mui/material/Box'
+import Switch from '@mui/material/Switch'
+import Stack from '@mui/material/Stack'
 
 const CreateManagerDialog = props => {
   const { open, handleClose, onNeedReloadTable, data } = props
@@ -39,6 +41,7 @@ const CreateManagerDialog = props => {
   const [imagesAsUrl, setImagesAsUrl] = useState([])
   const [minDateTimeStart, setMinDateTimeStart] = useState(moment(new Date()).format('YYYY-MM-DD'))
   const [maxDateTimeStart, setMaxDateTimeStart] = useState(moment(new Date()).format('YYYY-MM-DD'))
+  const [isFemale, setIsFemale] = useState(true)
 
   const [isLoadingUpdateFiles, setIsLoadingUpdateFiles] = useState([false, false, false])
 
@@ -159,6 +162,10 @@ const CreateManagerDialog = props => {
     )
   }
 
+  const handleChangeFemale = () => {
+    setIsFemale(!isFemale)
+  }
+
   return (
     <Dialog open={open} onClose={handleClose} maxWidth='lg' fullWidth={true}>
       <DialogTitle>
@@ -258,21 +265,18 @@ const CreateManagerDialog = props => {
               </p>
 
               <FormTitle title='Giới Tính:' />
-              <TextField
-                margin='dense'
-                id='description'
-                name='description'
-                type='text'
-                fullWidth
-                variant='outlined'
-                onChange={handleChange}
-                onBlur={handleBlur}
-                value={values.description}
-              />
+              <Stack direction='row' spacing={1} alignItems='center'>
+                <Typography>Nam</Typography>
+                <Switch
+                  checked={isFemale}
+                  onChange={handleChangeFemale}
+                  inputProps={{ 'aria-label': 'controlled' }}
+                />
+                <Typography>Nữ</Typography>
+              </Stack>
               <p className='text-red-500'>
                 <ErrorMessage name='description' />
               </p>
-
 
               <Grid container spacing={3}>
                 {/* <Grid item xs={3}>
