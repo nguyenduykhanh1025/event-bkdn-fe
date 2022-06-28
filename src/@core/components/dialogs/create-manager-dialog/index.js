@@ -21,7 +21,7 @@ import * as Yup from 'yup'
 import LinearProgress from '@mui/material/LinearProgress'
 import Box from '@mui/material/Box'
 
-const CreateEventDialog = props => {
+const CreateManagerDialog = props => {
   const { open, handleClose, onNeedReloadTable, data } = props
 
   const [title, setTitle] = useState('')
@@ -161,7 +161,9 @@ const CreateEventDialog = props => {
 
   return (
     <Dialog open={open} onClose={handleClose} maxWidth='lg' fullWidth={true}>
-      <DialogTitle>{data ? 'SỬA SỰ KIỆN' : 'TẠO SỰ KIỆN MỚI'}</DialogTitle>
+      <DialogTitle>
+        {data ? 'SỬA THÔNG TIN NGƯỜI PHỤ TRÁCH' : 'TẠO THÔNG TIN NGƯỜI PHỤ TRÁCH MỚI'}
+      </DialogTitle>
       <Formik
         initialValues={{
           title: title,
@@ -191,30 +193,62 @@ const CreateEventDialog = props => {
         }) => (
           <>
             <DialogContent>
-              <FormTitle title='Tiêu đề:' />
+              <FormTitle title='Tên:' />
               <TextField
                 margin='dense'
                 id='name'
                 name='title'
+                type='text'
+                fullWidth
+                variant='outlined'
+                onChange={handleChange}
+                onBlur={handleBlur}
+                value={values.name}
+              />
+              <p className='text-red-500'>
+                <ErrorMessage name='name' />
+              </p>
+
+              <FormTitle title='Email:' />
+              <TextField
+                margin='dense'
+                id='name'
+                name='email'
                 type='email'
                 fullWidth
                 variant='outlined'
                 onChange={handleChange}
                 onBlur={handleBlur}
-                value={values.title}
+                value={values.email}
               />
               <p className='text-red-500'>
-                <ErrorMessage name='title' />
+                <ErrorMessage name='email' />
               </p>
-              <FormTitle title='Nội dung:' />
+
+              <FormTitle title='Số Điện Thoại:' />
               <TextField
                 margin='dense'
                 id='name'
-                name='description'
+                name='phoneNumber'
+                type='text'
                 fullWidth
                 variant='outlined'
-                multiline
-                rows={4}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                value={values.phoneNumber}
+              />
+              <p className='text-red-500'>
+                <ErrorMessage name='phoneNumber' />
+              </p>
+
+              <FormTitle title='Miêu Tả Thêm:' />
+              <TextField
+                margin='dense'
+                id='description'
+                name='description'
+                type='text'
+                fullWidth
+                variant='outlined'
                 onChange={handleChange}
                 onBlur={handleBlur}
                 value={values.description}
@@ -223,78 +257,25 @@ const CreateEventDialog = props => {
                 <ErrorMessage name='description' />
               </p>
 
-              <FormTitle title='Địa điểm:' />
+              <FormTitle title='Giới Tính:' />
               <TextField
                 margin='dense'
-                id='name'
-                name='address'
+                id='description'
+                name='description'
+                type='text'
                 fullWidth
                 variant='outlined'
                 onChange={handleChange}
                 onBlur={handleBlur}
-                value={values.address}
+                value={values.description}
               />
               <p className='text-red-500'>
-                <ErrorMessage name='address' />
+                <ErrorMessage name='description' />
               </p>
 
-              <FormTitle title='Đối tượng tham gia:' />
-              <TextField
-                margin='dense'
-                id='name'
-                name='description_participant'
-                fullWidth
-                variant='outlined'
-                onChange={handleChange}
-                onBlur={handleBlur}
-                value={values.description_participant}
-              />
-
-              <FormTitle title='Yêu cầu:' />
-              <TextField
-                margin='dense'
-                id='name'
-                name='description_required'
-                fullWidth
-                variant='outlined'
-                multiline
-                rows={4}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                value={values.description_required}
-              />
-
-              <FormTitle title='Số lượng tham gia:' />
-              <TextField
-                margin='dense'
-                id='name'
-                name='count_need_participate'
-                type='number'
-                fullWidth
-                variant='outlined'
-                onChange={handleChange}
-                onBlur={handleBlur}
-                value={values.count_need_participate}
-              />
-              <p className='text-red-500'>
-                <ErrorMessage name='count_need_participate' />
-              </p>
-
-              <FormTitle title='Số điểm đạt được:' />
-              <TextField
-                margin='dense'
-                id='name'
-                name='point_number'
-                type='number'
-                fullWidth
-                variant='outlined'
-                onChange={handleChange}
-                onBlur={handleBlur}
-                value={values.point_number}
-              />
 
               <Grid container spacing={3}>
-                <Grid item xs={3}>
+                {/* <Grid item xs={3}>
                   <FormTitle title='Thời gian bắt đầu:' />
                   <TextField
                     id='date'
@@ -315,8 +296,8 @@ const CreateEventDialog = props => {
                   <p className='text-red-500'>
                     <ErrorMessage name='start_at' />
                   </p>
-                </Grid>
-                <Grid item xs={3}>
+                </Grid> */}
+                {/* <Grid item xs={3}>
                   <FormTitle title='Thời gian kết thúc:' />
                   <TextField
                     id='date'
@@ -334,23 +315,12 @@ const CreateEventDialog = props => {
                   <p className='text-red-500'>
                     <ErrorMessage name='end_at' />
                   </p>
-                </Grid>
+                </Grid> */}
               </Grid>
-              <FormTitle title='Tải ảnh 1:' />
+              <FormTitle title='Ảnh Đại Diện:' />
               <Box sx={{ width: '30%' }}>
                 <TextField type='file' onChange={handleImageAsFile1}></TextField>
                 {isLoadingUpdateFiles[0] ? <LinearProgress /> : null}
-              </Box>
-
-              <FormTitle title='Tải ảnh 2:' />
-              <Box sx={{ width: '30%' }}>
-                <TextField type='file' onChange={handleImageAsFile2} />
-                {isLoadingUpdateFiles[1] ? <LinearProgress /> : null}
-              </Box>
-              <FormTitle title='Tải ảnh 3:' />
-              <Box sx={{ width: '30%' }}>
-                <TextField type='file' onChange={handleImageAsFile3} />
-                {isLoadingUpdateFiles[2] ? <LinearProgress /> : null}
               </Box>
             </DialogContent>
             <DialogActions>
@@ -364,6 +334,6 @@ const CreateEventDialog = props => {
   )
 }
 
-CreateEventDialog.propTypes = {}
+CreateManagerDialog.propTypes = {}
 
-export default CreateEventDialog
+export default CreateManagerDialog

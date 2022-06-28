@@ -106,9 +106,9 @@ const NotificationDropdown = () => {
 
   return (
     <Fragment>
-      <IconButton color='inherit' aria-haspopup='true' onClick={handleDropdownOpen} aria-controls='customized-menu'>
+      {/* <IconButton color='inherit' aria-haspopup='true' onClick={handleDropdownOpen} aria-controls='customized-menu'>
         <BellOutline />
-      </IconButton>
+      </IconButton> */}
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}

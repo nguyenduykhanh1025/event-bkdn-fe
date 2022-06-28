@@ -14,36 +14,67 @@ import CurrencyUsd from 'mdi-material-ui/CurrencyUsd'
 import DotsVertical from 'mdi-material-ui/DotsVertical'
 import CellphoneLink from 'mdi-material-ui/CellphoneLink'
 import AccountOutline from 'mdi-material-ui/AccountOutline'
-
-const salesData = [
-  {
-    stats: '245k',
-    title: 'Sales',
-    color: 'primary',
-    icon: <TrendingUp sx={{ fontSize: '1.75rem' }} />
-  },
-  {
-    stats: '12.5k',
-    title: 'Customers',
-    color: 'success',
-    icon: <AccountOutline sx={{ fontSize: '1.75rem' }} />
-  },
-  {
-    stats: '1.54k',
-    color: 'warning',
-    title: 'Products',
-    icon: <CellphoneLink sx={{ fontSize: '1.75rem' }} />
-  },
-  {
-    stats: '$88k',
-    color: 'info',
-    title: 'Revenue',
-    icon: <CurrencyUsd sx={{ fontSize: '1.75rem' }} />
-  }
-]
+import { useEffect, useState } from 'react'
+import { adminStatisticUserService } from 'src/@core/services'
+import overlayLoading from 'src/@core/utils/overlay-loading'
+import { async } from '@firebase/util'
 
 const renderStats = () => {
-  return salesData.map((item, index) => (
+  const [value, setValue] = useState({})
+  const [statistics, setStatistic] = useState([
+    {
+      stats: '245k',
+      title: 'Sự Kiện',
+      color: 'primary',
+      icon: <TrendingUp sx={{ fontSize: '1.75rem' }} />
+    },
+    {
+      stats: '12.5k',
+      title: 'Số Người Tham Gia',
+      color: 'success',
+      icon: <AccountOutline sx={{ fontSize: '1.75rem' }} />
+    },
+    {
+      stats: '1.54k',
+      color: 'warning',
+      title: 'Tin Tức',
+      icon: <CellphoneLink sx={{ fontSize: '1.75rem' }} />
+    },
+    {
+      stats: '$88k',
+      color: 'info',
+      title: 'Tổng Điểm',
+      icon: <CurrencyUsd sx={{ fontSize: '1.75rem' }} />
+    }
+  ])
+
+  useEffect(() => {
+    getStaticGeneralFromAPI()
+  }, [])
+
+  const getStaticGeneralFromAPI = async () => {
+    try {
+      overlayLoading.start()
+      const res = await adminStatisticUserService.getStatisticGeneral()
+      setValue(res.data.data)
+      buildStatistic(res.data.data)
+    } catch (err) {
+      console.log(err)
+    } finally {
+      overlayLoading.stop()
+    }
+  }
+
+  const buildStatistic = data => {
+    let statisticsTemp = [...statistics]
+    statisticsTemp[0].stats = data.count_event
+    statisticsTemp[1].stats = data.count_participant
+    statisticsTemp[2].stats = data.count_journal
+    statisticsTemp[3].stats = data.sum_point_number.sum_point_number
+    setStatistic([...statisticsTemp])
+  }
+
+  return statistics.map((item, index) => (
     <Grid item xs={12} sm={3} key={index}>
       <Box key={index} sx={{ display: 'flex', alignItems: 'center' }}>
         <Avatar
@@ -72,20 +103,25 @@ const StatisticsCard = () => {
   return (
     <Card>
       <CardHeader
-        title='Statistics Card'
+        title='Thống Kê Chung'
         action={
-          <IconButton size='small' aria-label='settings' className='card-more-options' sx={{ color: 'text.secondary' }}>
+          <IconButton
+            size='small'
+            aria-label='settings'
+            className='card-more-options'
+            sx={{ color: 'text.secondary' }}
+          >
             <DotsVertical />
           </IconButton>
         }
-        subheader={
-          <Typography variant='body2'>
-            <Box component='span' sx={{ fontWeight: 600, color: 'text.primary' }}>
-              Total 48.5% growth
-            </Box>{' '}
-            😎 this month
-          </Typography>
-        }
+        // subheader={
+        //   <Typography variant='body2'>
+        //     <Box component='span' sx={{ fontWeight: 600, color: 'text.primary' }}>
+        //       Total 48.5% growth
+        //     </Box>{' '}
+        //     😎 this month
+        //   </Typography>
+        // }
         titleTypographyProps={{
           sx: {
             mb: 2.5,

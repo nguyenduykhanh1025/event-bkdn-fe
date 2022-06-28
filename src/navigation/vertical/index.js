@@ -7,6 +7,7 @@ import AlertCircleOutline from 'mdi-material-ui/AlertCircleOutline'
 import BookClockOutline from 'mdi-material-ui/BookClockOutline'
 import Newspaper from 'mdi-material-ui/Newspaper'
 import AccountGroup from 'mdi-material-ui/AccountGroup'
+import AccountStar from 'mdi-material-ui/AccountStar'
 
 const navigation = () => {
   return [
@@ -34,6 +35,11 @@ const navigation = () => {
       path: '/participant-management'
     },
     {
+      title: 'Người Phụ Trách',
+      icon: AccountStar,
+      path: '/manager-management'
+    },
+    {
       sectionTitle: 'Pages'
     },
 
@@ -41,7 +47,7 @@ const navigation = () => {
       title: 'Cài Đặt Tài Khoản',
       icon: AccountCogOutline,
       path: '/account-settings'
-    },
+    }
     // {
     //   title: 'Login',
     //   icon: Login,
