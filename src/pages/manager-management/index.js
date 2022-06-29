@@ -86,7 +86,7 @@ const AccountSettings = () => {
                       <TableCell align='left'>Email</TableCell>
                       <TableCell align='center'>Số Điện Thoại</TableCell>
                       <TableCell align='center'>Miêu Tả Thêm</TableCell>
-                      <TableCell align='center'>Hành Động</TableCell>
+                      {/* <TableCell align='center'>Hành Động</TableCell> */}
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -106,8 +106,8 @@ const AccountSettings = () => {
                         <TableCell align='left'>{`${row.name}`}</TableCell>
                         <TableCell align='left'>{row.email}</TableCell>
                         <TableCell align='center'>{row.phone_number}</TableCell>
-                        <TableCell align='center'>{row.description}</TableCell>
-                        <TableCell align='center'>
+                        <TableCell align='left'>{row.description}</TableCell>
+                        {/* <TableCell align='center'>
                           <div>
                             <Button
                               variant='outlined'
@@ -118,7 +118,7 @@ const AccountSettings = () => {
                               Chi Tiết
                             </Button>
                           </div>
-                        </TableCell>
+                        </TableCell> */}
                       </TableRow>
                     ))}
                   </TableBody>

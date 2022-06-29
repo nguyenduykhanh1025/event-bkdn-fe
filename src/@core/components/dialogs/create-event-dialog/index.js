@@ -10,7 +10,7 @@ import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import { FormTitle } from '../../titles'
 import Grid from '@mui/material/Grid'
-import { adminEventService, eventService } from 'src/@core/services'
+import { adminEventService, adminManagerEventService, eventService } from 'src/@core/services'
 import overlayLoading from 'src/@core/utils/overlay-loading'
 import moment from 'moment'
 import { storage } from 'src/@core/utils/firebase'
@@ -20,6 +20,11 @@ import { Formik, ErrorMessage } from 'formik'
 import * as Yup from 'yup'
 import LinearProgress from '@mui/material/LinearProgress'
 import Box from '@mui/material/Box'
+
+import InputLabel from '@mui/material/InputLabel'
+import MenuItem from '@mui/material/MenuItem'
+import FormControl from '@mui/material/FormControl'
+import Select from '@mui/material/Select'
 
 const CreateEventDialog = props => {
   const { open, handleClose, onNeedReloadTable, data } = props
@@ -31,6 +36,7 @@ const CreateEventDialog = props => {
   const [descriptionRequired, setDescriptionRequired] = useState('')
   const [countNeedParticipate, setCountNeedParticipate] = useState('')
   const [pointNumber, setPointNumber] = useState('')
+  const [idManagerEvent, setIdManagerEvent] = useState('')
 
   const [startDate, setStartDate] = useState(null)
   const [endDate, setEndDate] = useState(null)
@@ -41,6 +47,8 @@ const CreateEventDialog = props => {
   const [maxDateTimeStart, setMaxDateTimeStart] = useState(moment(new Date()).format('YYYY-MM-DD'))
 
   const [isLoadingUpdateFiles, setIsLoadingUpdateFiles] = useState([false, false, false])
+
+  const [managerEvents, setManagerEvents] = useState([])
 
   useEffect(() => {
     setTitle(data ? data.title : '')
@@ -60,10 +68,24 @@ const CreateEventDialog = props => {
         : moment(new Date()).format('YYYY-MM-DD')
     )
     setPointNumber(data ? data.point_number : '')
+
+    getAllManagerEvent()
   }, [data])
 
   const handleChange = newValue => {
     setValue(newValue)
+  }
+
+  const getAllManagerEvent = async () => {
+    try {
+      overlayLoading.start()
+      const res = await adminManagerEventService.index()
+      setManagerEvents(res.data.data)
+    } catch (err) {
+      console.log(err)
+    } finally {
+      overlayLoading.stop()
+    }
   }
 
   const handleCreate = async values => {
@@ -132,7 +154,8 @@ const CreateEventDialog = props => {
     count_need_participate: Yup.string().required('Trường này là yêu cầu nhập'),
     start_at: Yup.string().required('Trường này là yêu cầu nhập'),
     end_at: Yup.string().required('Trường này là yêu cầu nhập'),
-    address: Yup.string().required('Trường này là yêu cầu nhập')
+    address: Yup.string().required('Trường này là yêu cầu nhập'),
+    id_manager_event: Yup.string().required('Trường này là yêu cầu nhập')
   })
 
   const handleFireBaseUpload = async file => {
@@ -172,7 +195,8 @@ const CreateEventDialog = props => {
           address: address,
           point_number: pointNumber,
           description_participant: descriptionParticipant,
-          description_required: descriptionRequired
+          description_required: descriptionRequired,
+          id_manager_event: idManagerEvent
         }}
         validationSchema={SignupSchema}
         onSubmit={values => {
@@ -336,6 +360,28 @@ const CreateEventDialog = props => {
                   </p>
                 </Grid>
               </Grid>
+              <Grid container spacing={3}>
+                <Grid item xs={3}>
+                  <FormTitle title='Người phụ trách:' />
+                  <FormControl fullWidth>
+                    <Select
+                      labelId='demo-simple-select-label'
+                      id='demo-simple-select'
+                      value={values.id_manager_event}
+                      onChange={handleChange}
+                      name='id_manager_event'
+                    >
+                      {managerEvents.map(item => {
+                        return <MenuItem value={item.id}>{item.name}</MenuItem>
+                      })}
+                    </Select>
+                  </FormControl>
+                  <p className='text-red-500'>
+                    <ErrorMessage name='id_manager_event' />
+                  </p>
+                </Grid>
+              </Grid>
+
               <FormTitle title='Tải ảnh 1:' />
               <Box sx={{ width: '30%' }}>
                 <TextField type='file' onChange={handleImageAsFile1}></TextField>

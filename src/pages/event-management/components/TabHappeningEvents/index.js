@@ -16,6 +16,8 @@ import { adminEventService } from 'src/@core/services'
 import constants from 'src/@core/utils/constants'
 import overlayLoading from 'src/@core/utils/overlay-loading'
 import CreateEventDialog from 'src/@core/components/dialogs/create-event-dialog'
+import WatchManagerEventDialog from 'src/@core/components/dialogs/watch-manager-event-dialog'
+import AccountTieIcon from 'mdi-material-ui/AccountTie'
 
 const PARAMS_PAGINATE_DEFAULT = {
   filter_column: 'status',
@@ -26,6 +28,9 @@ const TabIncomingEvents = () => {
   const [events, setEvents] = useState([])
   const [isOpenCreateEventDialog, setIsOpenCreateEventDialog] = useState(false)
   const [isNeedReload, setIsNeedReload] = useState(false)
+  const [isOpenWatchManagerEventDialog, setIsOpenWatchManagerEventDialog] = useState(false)
+  const [idManagerEventSelected, setIdManagerEventSelected] = useState(null)
+
   const [meta, setMeta] = useState({
     currentPage: 0,
     total: 0,
@@ -69,6 +74,11 @@ const TabIncomingEvents = () => {
     setIsOpenCreateEventDialog(true)
   }
 
+  const onClickShowManagerEvent = idManagerEvent => {
+    setIsOpenWatchManagerEventDialog(true)
+    setIdManagerEventSelected(idManagerEvent)
+  }
+
   return (
     <CardContent>
       <Grid container spacing={7}>
@@ -95,6 +105,7 @@ const TabIncomingEvents = () => {
                   <TableCell align='center'>SL.Đã Đăng Kí</TableCell>
                   <TableCell align='center'>Bắt Đầu</TableCell>
                   <TableCell align='center'>Kết Thúc</TableCell>
+                  <TableCell align='center'>Người Phụ Trách</TableCell>
                   <TableCell align='center'>Actions</TableCell>
                 </TableRow>
               </TableHead>
@@ -114,6 +125,20 @@ const TabIncomingEvents = () => {
                     <TableCell align='center'>{row.count_registered}</TableCell>
                     <TableCell align='center'>{row.start_at}</TableCell>
                     <TableCell align='center'>{row.end_at}</TableCell>
+                    <TableCell align='center'>
+                      <div>
+                        <Button
+                          variant='outlined'
+                          size='small'
+                          endIcon={<AccountTieIcon />}
+                          onClick={() => {
+                            onClickShowManagerEvent(row.id_manager_event)
+                          }}
+                        >
+                          Thông Tin
+                        </Button>
+                      </div>
+                    </TableCell>
                     <TableCell align='center'>
                       <div>
                         <Button
@@ -150,6 +175,14 @@ const TabIncomingEvents = () => {
           setIsOpenCreateEventDialog(false)
           setIsNeedReload(!isNeedReload)
         }}
+      />
+      <WatchManagerEventDialog
+        open={isOpenWatchManagerEventDialog}
+        handleClose={() => setIsOpenWatchManagerEventDialog(false)}
+        onNeedReloadTable={() => {
+          setIsOpenWatchManagerEventDialog(false)
+        }}
+        idManagerEvent={idManagerEventSelected}
       />
     </CardContent>
   )
