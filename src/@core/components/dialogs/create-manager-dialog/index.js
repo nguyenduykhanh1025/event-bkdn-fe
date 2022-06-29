@@ -10,7 +10,7 @@ import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import { FormTitle } from '../../titles'
 import Grid from '@mui/material/Grid'
-import { adminEventService, eventService } from 'src/@core/services'
+import { adminEventService, adminManagerEventService, eventService } from 'src/@core/services'
 import overlayLoading from 'src/@core/utils/overlay-loading'
 import moment from 'moment'
 import { storage } from 'src/@core/utils/firebase'
@@ -26,8 +26,14 @@ import Stack from '@mui/material/Stack'
 const CreateManagerDialog = props => {
   const { open, handleClose, onNeedReloadTable, data } = props
 
-  const [title, setTitle] = useState('')
+  const [name, setName] = useState('')
   const [description, setDescription] = useState('')
+  const [phoneNumber, setPhoneNumber] = useState('')
+  const [email, setEmail] = useState('')
+  const [sex, setSex] = useState(false)
+  const [avatar, setAvatar] = useState('')
+
+  const [title, setTitle] = useState('')
   const [address, setAddress] = useState('')
   const [descriptionParticipant, setDescriptionParticipant] = useState('')
   const [descriptionRequired, setDescriptionRequired] = useState('')
@@ -70,23 +76,20 @@ const CreateManagerDialog = props => {
   }
 
   const handleCreate = async values => {
-    // TODO: upload anh chua xong, dang dich promise gi do
     overlayLoading.start()
-
-    // await updateImagesToFirebase()
-    console.log('imagesAsUrl', imagesAsUrl)
     const payload = {
       ...values,
-      images_str: imagesAsUrl.join(',')
+      sex: isFemale,
+      avatar: imagesAsUrl.join(',')
     }
 
     try {
       const res = data
-        ? await adminEventService.update({
+        ? await adminManagerEventService.update({
             ...payload,
             id: data.id
           })
-        : await adminEventService.create(payload)
+        : await adminManagerEventService.create(payload)
       onNeedReloadTable()
     } catch (err) {
     } finally {
@@ -130,12 +133,10 @@ const CreateManagerDialog = props => {
   }
 
   const SignupSchema = Yup.object().shape({
-    title: Yup.string().required('Trường này là yêu cầu nhập'),
+    name: Yup.string().required('Trường này là yêu cầu nhập'),
+    email: Yup.string().required('Trường này là yêu cầu nhập'),
     description: Yup.string().required('Trường này là yêu cầu nhập'),
-    count_need_participate: Yup.string().required('Trường này là yêu cầu nhập'),
-    start_at: Yup.string().required('Trường này là yêu cầu nhập'),
-    end_at: Yup.string().required('Trường này là yêu cầu nhập'),
-    address: Yup.string().required('Trường này là yêu cầu nhập')
+    phone_number: Yup.string().required('Trường này là yêu cầu nhập')
   })
 
   const handleFireBaseUpload = async file => {
@@ -173,15 +174,12 @@ const CreateManagerDialog = props => {
       </DialogTitle>
       <Formik
         initialValues={{
-          title: title,
+          name: name,
+          email: email,
           description: description,
-          count_need_participate: countNeedParticipate,
-          start_at: startDate,
-          end_at: endDate,
-          address: address,
-          point_number: pointNumber,
-          description_participant: descriptionParticipant,
-          description_required: descriptionRequired
+          phone_number: phoneNumber,
+          sex: sex,
+          avatar: avatar
         }}
         validationSchema={SignupSchema}
         onSubmit={values => {
@@ -204,7 +202,7 @@ const CreateManagerDialog = props => {
               <TextField
                 margin='dense'
                 id='name'
-                name='title'
+                name='name'
                 type='text'
                 fullWidth
                 variant='outlined'
@@ -219,7 +217,7 @@ const CreateManagerDialog = props => {
               <FormTitle title='Email:' />
               <TextField
                 margin='dense'
-                id='name'
+                id='email'
                 name='email'
                 type='email'
                 fullWidth
@@ -235,17 +233,17 @@ const CreateManagerDialog = props => {
               <FormTitle title='Số Điện Thoại:' />
               <TextField
                 margin='dense'
-                id='name'
-                name='phoneNumber'
+                id='phone_number'
+                name='phone_number'
                 type='text'
                 fullWidth
                 variant='outlined'
                 onChange={handleChange}
                 onBlur={handleBlur}
-                value={values.phoneNumber}
+                value={values.phone_number}
               />
               <p className='text-red-500'>
-                <ErrorMessage name='phoneNumber' />
+                <ErrorMessage name='phone_number' />
               </p>
 
               <FormTitle title='Miêu Tả Thêm:' />
@@ -274,53 +272,8 @@ const CreateManagerDialog = props => {
                 />
                 <Typography>Nữ</Typography>
               </Stack>
-              <p className='text-red-500'>
-                <ErrorMessage name='description' />
-              </p>
 
-              <Grid container spacing={3}>
-                {/* <Grid item xs={3}>
-                  <FormTitle title='Thời gian bắt đầu:' />
-                  <TextField
-                    id='date'
-                    type='date'
-                    name='start_at'
-                    sx={{ width: '100%' }}
-                    InputLabelProps={{
-                      shrink: true
-                    }}
-                    InputProps={{ inputProps: { min: minDateTimeStart } }}
-                    onChange={e => {
-                      handleChange(e)
-                      setMaxDateTimeStart(e.target.value)
-                    }}
-                    onBlur={handleBlur}
-                    value={values.start_at}
-                  />
-                  <p className='text-red-500'>
-                    <ErrorMessage name='start_at' />
-                  </p>
-                </Grid> */}
-                {/* <Grid item xs={3}>
-                  <FormTitle title='Thời gian kết thúc:' />
-                  <TextField
-                    id='date'
-                    type='date'
-                    name='end_at'
-                    sx={{ width: '100%' }}
-                    InputLabelProps={{
-                      shrink: true
-                    }}
-                    InputProps={{ inputProps: { min: maxDateTimeStart } }}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    value={values.end_at}
-                  />
-                  <p className='text-red-500'>
-                    <ErrorMessage name='end_at' />
-                  </p>
-                </Grid> */}
-              </Grid>
+              <Grid container spacing={3}></Grid>
               <FormTitle title='Ảnh Đại Diện:' />
               <Box sx={{ width: '30%' }}>
                 <TextField type='file' onChange={handleImageAsFile1}></TextField>

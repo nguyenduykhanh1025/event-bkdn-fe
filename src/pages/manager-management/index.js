@@ -13,7 +13,7 @@ import { Avatar, Pagination, Typography } from '@mui/material'
 import TitleHeaderPage from 'src/@core/components/title-header-page'
 import ArrowRightThinIcon from 'mdi-material-ui/ArrowRightThin'
 import { useRouter } from 'next/router'
-import { adminUserService } from 'src/@core/services'
+import { adminManagerEventService, adminUserService } from 'src/@core/services'
 import { useEffect, useState } from 'react'
 import overlayLoading from 'src/@core/utils/overlay-loading'
 import CreateManagerDialog from 'src/@core/components/dialogs/create-manager-dialog'
@@ -27,10 +27,11 @@ const AccountSettings = () => {
   const [users, setUsers] = useState([])
   const [meta, setMeta] = useState({})
   const [isOpenCreateEventDialog, setIsOpenCreateEventDialog] = useState(false)
+  const [isNeedReload, setIsNeedReload] = useState(false)
 
   useEffect(async () => {
     await getJournalsFromAPI({})
-  }, [])
+  }, [isNeedReload])
 
   const onClickGoToDetail = id => {
     router.push(`/participant-management/${id}`)
@@ -39,7 +40,7 @@ const AccountSettings = () => {
   const getJournalsFromAPI = async params => {
     try {
       overlayLoading.start()
-      const res = await adminUserService.paginateParticipant(params)
+      const res = await adminManagerEventService.paginate(params)
       setUsers(res.data.data.items)
       setMeta(res.data.data.meta)
     } catch (err) {
@@ -84,7 +85,7 @@ const AccountSettings = () => {
                       <TableCell align='left'>Tên</TableCell>
                       <TableCell align='left'>Email</TableCell>
                       <TableCell align='center'>Số Điện Thoại</TableCell>
-                      <TableCell align='center'>Ngày Sinh</TableCell>
+                      <TableCell align='center'>Miêu Tả Thêm</TableCell>
                       <TableCell align='center'>Hành Động</TableCell>
                     </TableRow>
                   </TableHead>
@@ -99,13 +100,13 @@ const AccountSettings = () => {
                         </TableCell>
                         <TableCell align='center'>
                           <div className='m-auto w-max'>
-                            <Avatar alt='Remy Sharp' src='/images/avatars/1.png' />
+                            <Avatar alt='Remy Sharp' src={row.avatar} />
                           </div>
                         </TableCell>
-                        <TableCell align='left'>{`${row.last_name} ${row.first_name}`}</TableCell>
+                        <TableCell align='left'>{`${row.name}`}</TableCell>
                         <TableCell align='left'>{row.email}</TableCell>
                         <TableCell align='center'>{row.phone_number}</TableCell>
-                        <TableCell align='center'>{row.birth_date}</TableCell>
+                        <TableCell align='center'>{row.description}</TableCell>
                         <TableCell align='center'>
                           <div>
                             <Button
