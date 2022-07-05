@@ -25,6 +25,8 @@ import { adminUserService } from 'src/@core/services'
 import { async } from '@firebase/util'
 import overlayLoading from 'src/@core/utils/overlay-loading'
 import { showAlertSuccess } from 'src/@core/utils/alert-notify-helper'
+import { storage } from 'src/@core/utils/firebase'
+import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage'
 
 const ImgStyled = styled('img')(({ theme }) => ({
   width: 120,
@@ -65,6 +67,7 @@ const TabAccount = () => {
       overlayLoading.start()
       const res = await adminUserService.getById(getIdUserFromJWT())
       setUser(res.data.data)
+      setImgSrc(res.data.data.avatar)
     } catch (err) {
       console.log(err)
     } finally {
@@ -76,8 +79,7 @@ const TabAccount = () => {
     const reader = new FileReader()
     const { files } = file.target
     if (files && files.length !== 0) {
-      reader.onload = () => setImgSrc(reader.result)
-      reader.readAsDataURL(files[0])
+      handleFireBaseUpload(files[0])
     }
   }
 
@@ -93,6 +95,39 @@ const TabAccount = () => {
       showAlertSuccess('Lưu thành công!')
     } catch (err) {
       console.log(err)
+    } finally {
+      overlayLoading.stop()
+    }
+  }
+
+  const handleFireBaseUpload = async file => {
+    const storageRef = ref(storage, `files/${file.name}`)
+    const uploadTask = uploadBytesResumable(storageRef, file)
+    overlayLoading.start()
+    uploadTask.on(
+      'state_changed',
+      snapshot => {
+        const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100)
+        console.log('progress', progress)
+      },
+      error => {
+        alert(error)
+      },
+      async () => {
+        const downloadURL = await getDownloadURL(uploadTask.snapshot.ref)
+        setImgSrc(downloadURL)
+        await updateAvatar(downloadURL)
+      }
+    )
+  }
+
+  const updateAvatar = async imgAvatar => {
+    try {
+      const payload = {
+        avatar: imgAvatar
+      }
+      await adminUserService.updateAvatar(payload)
+    } catch (err) {
     } finally {
       overlayLoading.stop()
     }
@@ -123,9 +158,9 @@ const TabAccount = () => {
                 {/* <ResetButtonStyled color='error' variant='outlined' onClick={() => setImgSrc('/images/avatars/1.png')}>
                   Reset
                 </ResetButtonStyled> */}
-                <Typography variant='body2' sx={{ marginTop: 5 }}>
+                {/* <Typography variant='body2' sx={{ marginTop: 5 }}>
                   Allowed PNG or JPEG. Max size of 800K.
-                </Typography>
+                </Typography> */}
               </Box>
             </Box>
           </Grid>

@@ -25,5 +25,8 @@ export default axios => resource => ({
   },
   updatePassowrd(payload) {
     return axios.put(`${resource}/update-password`, payload)
+  },
+  updateAvatar(payload) {
+    return axios.put(`${resource}/update-avatar`, payload)
   }
 })
