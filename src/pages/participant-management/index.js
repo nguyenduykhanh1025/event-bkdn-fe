@@ -123,7 +123,7 @@ const AccountSettings = () => {
                             <Avatar alt='Remy Sharp' src='/images/avatars/1.png' />
                           </div>
                         </TableCell>
-                        <TableCell align='left'>{`${row.last_name} ${row.first_name}`}</TableCell>
+                        <TableCell align='left'>{`${row?.first_name}`}</TableCell>
                         <TableCell align='center'>{row.id_student}</TableCell>
                         <TableCell align='left'>{row.email}</TableCell>
                         <TableCell align='center'>{row.phone_number}</TableCell>

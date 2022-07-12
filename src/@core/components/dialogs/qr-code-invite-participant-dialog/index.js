@@ -10,15 +10,15 @@ import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import { FormTitle } from '../../titles'
 import Grid from '@mui/material/Grid'
-import QRCode from "react-qr-code";
+import QRCode from 'react-qr-code'
 // import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker'
 
 const CreateJournalDialog = props => {
+  const hrefCurrent = window.location.href.split('/')
   const { open, handleClose, eventId } = props
-  const [urlJoinEvent, setUrlJoinEvent] = useState(`http://192.168.222.195:3000/join-to-event/${eventId}`)
-  // useEffect(() => {
-  //   ReactDOM.render(<QRCode value="hey" />, document.getElementById("qr-code"));
-  // }, [])
+  const [urlJoinEvent, setUrlJoinEvent] = useState(
+    `${hrefCurrent[0]}//${hrefCurrent[2]}/join-to-event/${eventId}`
+  )
 
   return (
     <Dialog open={open} onClose={handleClose} maxWidth='lg' fullWidth={true}>

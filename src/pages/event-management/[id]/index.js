@@ -32,6 +32,8 @@ import { showConfirm } from 'src/@core/utils/alert-notify-helper'
 import CreateEventDialog from 'src/@core/components/dialogs/create-event-dialog'
 import IconButton from '@mui/material/IconButton'
 import QrCodeInviteParticipantDialog from 'src/@core/components/dialogs/qr-code-invite-participant-dialog'
+import overlayLoading from 'src/@core/utils/overlay-loading'
+import router from 'next/router'
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction='up' ref={ref} {...props} />
@@ -63,7 +65,7 @@ const EventManagementDetail = props => {
     }
   }
 
-  const buildImageStr = (imageStr) => {
+  const buildImageStr = imageStr => {
     setImages(imageStr.split(','))
   }
 
@@ -85,10 +87,10 @@ const EventManagementDetail = props => {
       async () => {
         try {
           overlayLoading.start()
-
-          await adminJournalService.delete(journalId)
+          await adminEventService.delete(eventId)
           router.back()
         } catch (err) {
+          console.log('err', err)
         } finally {
           overlayLoading.stop()
         }
@@ -121,18 +123,6 @@ const EventManagementDetail = props => {
                         Xem Thành Viên
                       </Button>
                     </span>
-                    {/* <span className='ml-2'>
-                      <Button
-                        variant='contained'
-                        size='small'
-                        color='info'
-                        startIcon={<AccountMultiplePlusIcon />}
-                        onClick={onClickWatchParticipant}
-                        disabled={new Date(eventDetail.end_at) < new Date() ? true : false}
-                      >
-                        Mời Thành Viên
-                      </Button>
-                    </span> */}
                     <span className='ml-2'>
                       <Button
                         variant='contained'
@@ -146,16 +136,18 @@ const EventManagementDetail = props => {
                       </Button>
                     </span>
                     <span className='ml-2'>
-                      <Button
-                        variant='contained'
-                        size='small'
-                        color='error'
-                        startIcon={<DeleteIcon />}
-                        onClick={onCLickDeleteEvent}
-                        disabled={new Date(eventDetail.end_at) < new Date() ? true : false}
-                      >
-                        Xóa
-                      </Button>
+                      {!eventDetail.count_participated ? (
+                        <Button
+                          variant='contained'
+                          size='small'
+                          color='error'
+                          startIcon={<DeleteIcon />}
+                          onClick={onCLickDeleteEvent}
+                          disabled={new Date(eventDetail.end_at) < new Date() ? true : false}
+                        >
+                          Xóa
+                        </Button>
+                      ) : null}
                     </span>
                     <span className='ml-2'>
                       <IconButton
@@ -233,22 +225,13 @@ const EventManagementDetail = props => {
         <Grid item xs={4}>
           <Grid container spacing={7}>
             <Grid item xs={12}>
-              <img
-                src={images[0]}
-                loading='lazy'
-              />
+              <img src={images[0]} loading='lazy' />
             </Grid>
             <Grid item xs={6}>
-              <img
-                src={images.length >= 1 ? images[1] : null}
-                loading='lazy'
-              />
+              <img src={images.length >= 1 ? images[1] : null} loading='lazy' />
             </Grid>
             <Grid item xs={6}>
-              <img
-                src={images.length >= 2 ? images[2] : null}
-                loading='lazy'
-              />
+              <img src={images.length >= 2 ? images[2] : null} loading='lazy' />
             </Grid>
           </Grid>
         </Grid>
@@ -260,7 +243,7 @@ const EventManagementDetail = props => {
           keepMounted
           onClose={handleClose}
           aria-describedby='alert-dialog-slide-description'
-          maxWidth="xl"
+          maxWidth='xl'
         >
           <ParticipantsEventDialog handleClose={handleClose} open={open} eventId={eventId} />
         </Dialog>

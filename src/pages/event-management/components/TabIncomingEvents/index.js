@@ -107,8 +107,8 @@ const TabIncomingEvents = () => {
                   <TableCell align='center'>SL.Đã Đăng Kí</TableCell>
                   <TableCell align='center'>Bắt Đầu</TableCell>
                   <TableCell align='center'>Kết Thúc</TableCell>
-                  <TableCell align='center'>Người Phụ Trách</TableCell>
-                  <TableCell align='center'>Actions</TableCell>
+                  <TableCell align='center' width={'180px'}>Người Phụ Trách</TableCell>
+                  <TableCell align='center'  width={'150px'}>Actions</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>

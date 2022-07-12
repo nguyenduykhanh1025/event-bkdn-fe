@@ -44,6 +44,7 @@ const eventManagementDetail = props => {
   )
   const [isOpenCreateJournalDialog, setIsOpenCreateJournalDialog] = useState(false)
   const [journalDetail, setJournalDetail] = useState({})
+  const [images, setImages] = useState([])
 
   useEffect(async () => {
     await getJournalByID()
@@ -53,9 +54,14 @@ const eventManagementDetail = props => {
     try {
       const res = await adminJournalService.show(journalId)
       setJournalDetail(res.data.data)
+      buildImageStr(res.data.data.images_str)
     } catch (err) {
     } finally {
     }
+  }
+
+  const buildImageStr = imageStr => {
+    setImages(imageStr.split(','))
   }
 
   const onClickDeleteNews = () => {
@@ -141,22 +147,13 @@ const eventManagementDetail = props => {
         <Grid item xs={4}>
           <Grid container spacing={7}>
             <Grid item xs={12}>
-              <img
-                src='https://scontent.fhan4-3.fna.fbcdn.net/v/t39.30808-6/281944709_1978609992339799_6201285863621141299_n.jpg?_nc_cat=103&ccb=1-7&_nc_sid=174925&_nc_ohc=9u4FQalwyYUAX90Yxoo&_nc_ht=scontent.fhan4-3.fna&oh=00_AT9WqbsQ5RZ2KupFzDCOmA7wkl4z0XdnryPoHxQ0V7BCTg&oe=62917D6B'
-                loading='lazy'
-              />
+              <img src={images[0]} loading='lazy' />
             </Grid>
             <Grid item xs={6}>
-              <img
-                src='https://scontent.fhan4-1.fna.fbcdn.net/v/t39.30808-6/279889832_1974095076124624_5455312005040254126_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=174925&_nc_ohc=Yya14nlM_14AX_lhKhP&_nc_oc=AQkp_Xa_O8Ggj4dCj4f-OEzOzicuwXTOIvT0m9vzDz8ITlqsJ8WTnNHsp_5_lPFbyCM&_nc_ht=scontent.fhan4-1.fna&oh=00_AT8lSMc_vJXGhg8bg0y7fCEPzfx_ghVElXezDTxEvOXc4Q&oe=62909866'
-                loading='lazy'
-              />
+              <img src={images.length >= 1 ? images[1] : null} loading='lazy' />
             </Grid>
             <Grid item xs={6}>
-              <img
-                src='https://scontent.fhan4-3.fna.fbcdn.net/v/t39.30808-6/280648907_1973153322885466_4478380045121648335_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=174925&_nc_ohc=mn1VsKKAM4EAX8ocZc6&tn=BefvewHra5AZP9lT&_nc_ht=scontent.fhan4-3.fna&oh=00_AT_JbhtoA0YMtMCuhOJi-sLXTcs6yl_iLmScEj57uueedA&oe=6291F6CA'
-                loading='lazy'
-              />
+              <img src={images.length >= 2 ? images[2] : null} loading='lazy' />
             </Grid>
           </Grid>
         </Grid>

@@ -69,7 +69,7 @@ const Error500 = () => {
       await eventUserService.joinToEvent(payload)
       showAlertSuccess('Tham gia sự kiện thành công!')
     } catch (err) {
-      // setError(err)
+      console.log(err.response.data.message)
       if (err.response.data.message == 'user_does_not_exist') {
         showAlertError('Tài khoản không tồn tại!')
       }
