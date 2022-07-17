@@ -40,24 +40,21 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 })
 
 const EventManagementDetail = props => {
-  const [eventId, setEventId] = useState(
-    typeof window !== 'undefined'
-      ? window.location.href.split('/')[window.location.href.split('/').length - 2]
-      : null
-  )
+  const [eventId, setEventId] = useState('')
   const [open, setOpen] = useState(false)
   const [eventDetail, setEventDetail] = useState({})
   const [isOpenCreateEventDialog, setIsOpenCreateEventDialog] = useState(false)
   const [isOpenInviteParticipantByQrCode, setIsOpenInviteParticipantByQrCode] = useState(false)
   const [images, setImages] = useState([])
 
-  useEffect(async () => {
-    await getEventByID()
+  useEffect(() => {
+    getEventByID()
   }, [])
 
   const getEventByID = async () => {
     try {
-      const res = await adminEventService.show(eventId)
+      setEventId(router.router.query.id)
+      const res = await adminEventService.show(router.router.query.id)
       setEventDetail(res.data.data)
       buildImageStr(res.data.data.images_str)
     } catch (err) {

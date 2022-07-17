@@ -53,18 +53,19 @@ const Error500 = () => {
   const router = useRouter()
 
   const [eventId, setEventId] = useState(
-    typeof window !== 'undefined'
-      ? window.location.href.split('/')[window.location.href.split('/').length - 2]
-      : null
+    // typeof window !== 'undefined'
+    //   ? window.location.href.split('/')[window.location.href.split('/').length - 2]
+    //   : null
   )
 
   useEffect(() => {
-    console.log(' router.query', router.query)
-  }, [])
+    setEventId(router.query.id)
+  }, [router.query])
 
   const [error, setError] = useState({})
 
   const onCLickJoinToEvent = async () => {
+    console.log('eventId', eventId)
     const payload = {
       id_event: eventId,
       email: email
